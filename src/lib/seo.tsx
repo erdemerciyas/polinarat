@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getStaticLabels } from '@/data/static-labels'
 import localesConfig from '@/lib/locales.json'
+import { cmsPlainSnippet, lexicalLikeToPlainText } from '@/lib/cms-plain-text'
 import { getNormalizedSiteUrl } from '@/lib/site-url'
 
 const SITE_URL = getNormalizedSiteUrl()
@@ -17,7 +18,8 @@ export async function getSiteDefaultDescription(locale: string): Promise<string>
     const { getDictionary } = await import('@/lib/getDictionary')
     const dictionary = await getDictionary(locale)
     const siteSettings = dictionary['site-settings']
-    return siteSettings?.defaultSeoDescription || labels.seo.defaultDescription
+    const fromCms = lexicalLikeToPlainText(siteSettings?.defaultSeoDescription)
+    return fromCms || labels.seo.defaultDescription
   } catch {
     return labels.seo.defaultDescription
   }
@@ -32,8 +34,8 @@ const ogLocaleMap: Record<string, string> = {
 }
 
 type SEOArgs = {
-  title: string
-  description: string
+  title: unknown
+  description: unknown
   locale: string
   path: string
   image?: string
@@ -52,20 +54,22 @@ export function alternateLanguages(path: string) {
 
 export function generateSEO({ title, description, locale, path, image, type = 'website', noIndex }: SEOArgs): Metadata {
   const labels = getStaticLabels(locale)
-  const fullTitle = `${title}${labels.seo.titleSuffix}`
+  const safeTitle = cmsPlainSnippet(title, 200)
+  const safeDesc = cmsPlainSnippet(description, 320)
+  const fullTitle = `${safeTitle}${labels.seo.titleSuffix}`
   const url = `${SITE_URL}/${locale}${path}`
   const ogImage = image || DEFAULT_SHARE_IMAGE
 
   return {
     title: fullTitle,
-    description,
+    description: safeDesc,
     alternates: {
       canonical: url,
       languages: alternateLanguages(path),
     },
     openGraph: {
       title: fullTitle,
-      description,
+      description: safeDesc,
       url,
       siteName: labels.seo.siteName,
       images: [{ url: ogImage, width: 1200, height: 630 }],
@@ -75,7 +79,7 @@ export function generateSEO({ title, description, locale, path, image, type = 'w
     twitter: {
       card: 'summary_large_image',
       title: fullTitle,
-      description,
+      description: safeDesc,
       images: [ogImage],
     },
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
@@ -144,17 +148,18 @@ export function websiteJsonLd() {
 
 export function newsArticleJsonLd(article: {
   title: string
-  description: string
+  description?: unknown
   image?: string
   datePublished: string
   dateModified?: string
   author?: string
 }) {
+  const desc = cmsPlainSnippet(article.description ?? article.title, 500)
   return {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     headline: article.title,
-    description: article.description,
+    description: desc,
     image: article.image || DEFAULT_SHARE_IMAGE,
     datePublished: article.datePublished,
     dateModified: article.dateModified || article.datePublished,

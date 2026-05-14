@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = seo.title || aboutSettings?.hero?.title || 'About Us'
   const description =
     seo.description ||
-    aboutSettings?.story?.paragraph1?.slice(0, 160) ||
+    aboutSettings?.story?.paragraph1 ||
     defaultDesc
 
   const og = getBestMediaUrl(seo?.image) || getBestMediaUrl(aboutSettings?.hero?.backgroundImage)

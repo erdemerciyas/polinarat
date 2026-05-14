@@ -11,6 +11,7 @@ import { CoreValuesSection } from '@/components/CoreValuesSection'
 import { WhatsAppCTABar } from '@/components/layout/WhatsAppCTABar'
 import { getBestMediaUrl, withMediaCacheVersion } from '@/lib/media-url'
 import { toClientProps } from '@/lib/to-client-props'
+import { lexicalLikeToPlainText } from '@/lib/cms-plain-text'
 
 const ABOUT_PREVIEW_FALLBACK_IMAGE =
   'https://res.cloudinary.com/dtdogh9wg/image/upload/v1775050251/polinar/static/polinar-factory.jpg'
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const defaultDesc = await getSiteDefaultDescription(locale)
   return generateSEO({
     title: seo.title || labels.seo.defaultTitle,
-    description: seo.description || homepageData?.coreValues?.description?.slice(0, 160) || defaultDesc,
+    description: seo.description || homepageData?.coreValues?.description || defaultDesc,
     locale,
     path: '',
     image: seo.image?.url,
@@ -250,7 +251,7 @@ export default async function HomePage({ params }: Props) {
       {/* Core Values */}
       <CoreValuesSection
         title={homepageData?.coreValues?.title || ''}
-        description={homepageData?.coreValues?.description || ''}
+        description={lexicalLikeToPlainText(homepageData?.coreValues?.description)}
         locale={locale}
         subtitleSlides={businessCards
           .filter(c => c.description)

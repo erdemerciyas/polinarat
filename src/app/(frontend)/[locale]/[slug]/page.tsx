@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const meta = page.meta || {}
   return generateSEO({
     title: meta.title || page.heroTitle || page.title,
-    description: meta.description || page.excerpt?.slice(0, 160) || page.title,
+    description: meta.description || page.excerpt || page.title,
     locale,
     path: `/${slug}`,
     image: meta.image?.url || page.heroImage?.url,
