@@ -4,7 +4,6 @@ import { organizationJsonLd, JsonLd } from '@/lib/seo'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { ChatWidget } from '@/components/chatbot/ChatWidget'
-import { fontClasses } from '@/lib/fonts'
 import { inject } from '@vercel/analytics'
 
 inject()
@@ -24,9 +23,6 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound()
   }
 
-  const isRTL = currentLang.isRTL
-  const dir = isRTL ? 'rtl' : 'ltr'
-
   let navData: any = null
   let uiLabels: any = null
   let footerData: any = null
@@ -44,23 +40,24 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <html lang={locale} dir={dir} className={fontClasses}>
-      <head>
-        <JsonLd data={organizationJsonLd(locale)} />
-      </head>
-      <body className="font-body text-heading bg-white antialiased">
-        <Header
-          locale={locale}
-          languages={languages}
-          navData={navData}
-          commonLabels={uiLabels}
-        />
-        <main>
-          {children}
-        </main>
-        <Footer data={footerData} locale={locale} />
-        <ChatWidget labels={siteSettings?.chatbot?.labels} />
-      </body>
-    </html>
+    <div className="font-body text-heading bg-white antialiased">
+      <JsonLd data={organizationJsonLd(locale)} />
+      <Header
+        locale={locale}
+        languages={languages}
+        navData={navData}
+        commonLabels={uiLabels}
+      />
+      <main>
+        {children}
+      </main>
+      <Footer
+        data={footerData}
+        locale={locale}
+        siteContact={siteSettings?.contact}
+        socialMedia={siteSettings?.socialMedia}
+      />
+      <ChatWidget labels={siteSettings?.chatbot?.labels} />
+    </div>
   )
 }

@@ -1,8 +1,8 @@
 {
   "locales": [
     {
-      "label": "Russian",
-      "code": "ru"
+      "label": "Türkçe",
+      "code": "tr"
     },
     {
       "label": "English",
@@ -15,10 +15,6 @@
     {
       "label": "Arabic",
       "code": "ar"
-    },
-    {
-      "label": "Türkçe",
-      "code": "tr"
     }
   ],
   "defaultLocale": "en"

@@ -12,7 +12,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-const MEDIA_DIR = path.resolve('media')
+const MEDIA_DIR = path.resolve('public/media')
 const CLOUD_FOLDER = 'polinar/media'
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME
 

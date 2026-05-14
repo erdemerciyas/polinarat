@@ -28,7 +28,11 @@ export function middleware(request: NextRequest) {
   // Check if pathname already has a known locale segment
   const firstSegment = pathname.split('/')[1]
   if (firstSegment && (knownLocales.has(firstSegment) || looksLikeLocale(firstSegment))) {
-    const response = NextResponse.next()
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set('x-next-locale', firstSegment)
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    })
     response.cookies.set('NEXT_LOCALE', firstSegment, { path: '/', maxAge: 31536000 })
     return response
   }
@@ -61,5 +65,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next|favicon.ico).*)'],
 }

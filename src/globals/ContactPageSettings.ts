@@ -55,7 +55,15 @@ export const ContactPageSettings: GlobalConfig = {
       admin: { description: 'Labels shown next to actual contact details from Site Settings' },
       fields: [
         { name: 'addressLabel', type: 'text', localized: true },
-        { name: 'addressText', type: 'textarea', localized: true },
+        {
+          name: 'addressText',
+          type: 'textarea',
+          localized: true,
+          admin: {
+            description:
+              'Optional. If Site Settings → Contact → Address is set, that value is shown instead.',
+          },
+        },
         { name: 'phoneLabel', type: 'text', localized: true },
         { name: 'emailLabel', type: 'text', localized: true },
       ],

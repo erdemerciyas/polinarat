@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { getStaticLabels } from '@/data/static-labels'
+import { resolveSiteContact } from '@/lib/resolve-site-contact'
 import { generateSEO, localBusinessJsonLd, JsonLd } from '@/lib/seo'
 import { ContactForm } from '@/components/ContactForm'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
@@ -47,6 +48,10 @@ export default async function ContactPage({ params }: Props) {
   const form = contactSettings?.form || {}
   const messages = contactSettings?.messages || {}
   const info = contactSettings?.info || {}
+  const resolved = resolveSiteContact(siteSettings?.contact, staticLabels.company, {
+    addressPageFallback: info.addressText,
+  })
+  const addressBody = resolved.address
 
   return (
     <>
@@ -101,7 +106,7 @@ export default async function ContactPage({ params }: Props) {
                     </div>
                     <div>
                       <h3 className="contact-info-title">{info.addressLabel || ''}</h3>
-                      <p className="contact-info-text whitespace-pre-line">{info.addressText || ''}</p>
+                      <p className="contact-info-text whitespace-pre-line">{addressBody}</p>
                     </div>
                   </div>
                 </StaggerItem>
@@ -117,12 +122,14 @@ export default async function ContactPage({ params }: Props) {
                     <div>
                       <h3 className="contact-info-title">{info.phoneLabel || ''}</h3>
                       <div className="space-y-1">
-                        {staticLabels.company.phones.map((phone: string) => (
+                        {resolved.phones.map((phone: string) => (
                           <a key={phone} href={`tel:${phone.replace(/\s/g, '')}`} className="contact-info-link block">
                             {phone}
                           </a>
                         ))}
-                        <p className="contact-info-text">{staticLabels.company.fax}</p>
+                        {resolved.fax ? (
+                          <p className="contact-info-text">{resolved.fax}</p>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -139,8 +146,8 @@ export default async function ContactPage({ params }: Props) {
                     </div>
                     <div>
                       <h3 className="contact-info-title">{info.emailLabel || ''}</h3>
-                      <a href={`mailto:${staticLabels.company.email}`} className="contact-info-link">
-                        {staticLabels.company.email}
+                      <a href={`mailto:${resolved.email}`} className="contact-info-link">
+                        {resolved.email}
                       </a>
                     </div>
                   </div>
@@ -176,7 +183,7 @@ export default async function ContactPage({ params }: Props) {
       <section className="contact-map-section">
         <div className="contact-map-fade-top" />
         <iframe
-          src={staticLabels.company.mapUrl}
+          src={resolved.mapUrl}
           className="w-full h-full border-0 grayscale-[0.3] contrast-[1.05]"
           allowFullScreen
           loading="lazy"

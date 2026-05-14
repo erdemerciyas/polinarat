@@ -1,5 +1,5 @@
 // Static fallback values (used by middleware and as defaults)
-export const fallbackLocales = ['en', 'tr'] as const
+export const fallbackLocales = ['en', 'tr', 'de', 'ar', 'ru'] as const
 export type Locale = string
 export const defaultLocale = 'en'
 
@@ -8,6 +8,9 @@ export const supportedLocales = fallbackLocales
 export const localeLabels: Record<string, string> = {
   en: 'EN',
   tr: 'TR',
+  de: 'DE',
+  ar: 'AR',
+  ru: 'RU',
 }
 
 export function isValidLocale(locale: string): boolean {
@@ -53,6 +56,9 @@ export async function getActiveLanguages(): Promise<Language[]> {
       return [
         { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
         { id: '2', code: 'tr', label: 'Türkçe', nativeLabel: 'Türkçe', shortLabel: 'TR', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
+        { id: '3', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 2 },
+        { id: '4', code: 'ar', label: 'Arabic', nativeLabel: 'العربية', shortLabel: 'AR', isDefault: false, isActive: true, isRTL: true, sortOrder: 3 },
+        { id: '5', code: 'ru', label: 'Russian', nativeLabel: 'Русский', shortLabel: 'RU', isDefault: false, isActive: true, isRTL: false, sortOrder: 4 },
       ]
     }
 
@@ -74,6 +80,9 @@ export async function getActiveLanguages(): Promise<Language[]> {
     return [
       { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
       { id: '2', code: 'tr', label: 'Türkçe', nativeLabel: 'Türkçe', shortLabel: 'TR', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
+      { id: '3', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 2 },
+      { id: '4', code: 'ar', label: 'Arabic', nativeLabel: 'العربية', shortLabel: 'AR', isDefault: false, isActive: true, isRTL: true, sortOrder: 3 },
+      { id: '5', code: 'ru', label: 'Russian', nativeLabel: 'Русский', shortLabel: 'RU', isDefault: false, isActive: true, isRTL: false, sortOrder: 4 },
     ]
   }
 }

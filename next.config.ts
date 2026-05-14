@@ -6,6 +6,9 @@ const SITE_HOSTNAME = process.env.NEXT_PUBLIC_SITE_URL
   : undefined
 
 const nextConfig: NextConfig = {
+  // Core `lexical` only — externalizing `@payloadcms/richtext-lexical` breaks the admin
+  // build (Node tries to load bundled.css as ESM). Avoids missing vendor-chunks/@lexical.js in dev.
+  serverExternalPackages: ['lexical'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },

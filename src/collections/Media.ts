@@ -8,7 +8,7 @@ export const Media: CollectionConfig = {
     description: 'Images, documents and files',
   },
   upload: {
-    staticDir: 'media',
+    staticDir: 'public/media',
     mimeTypes: ['image/*', 'application/pdf'],
     imageSizes: [
       { name: 'thumbnail', width: 320, height: 240, position: 'centre' },

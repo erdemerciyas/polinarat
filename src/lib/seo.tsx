@@ -4,6 +4,9 @@ import localesConfig from '@/lib/locales.json'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.polinar.com.tr'
 
+/** Fallback Open Graph / article image when CMS image is missing (file lives in public/brand_assets/). */
+const DEFAULT_SHARE_IMAGE = `${SITE_URL}/brand_assets/logo.png`
+
 const allLocaleCodes = localesConfig.locales.map((l) => l.code)
 const defaultLocale = localesConfig.defaultLocale || 'en'
 
@@ -50,7 +53,7 @@ export function generateSEO({ title, description, locale, path, image, type = 'w
   const labels = getStaticLabels(locale)
   const fullTitle = `${title}${labels.seo.titleSuffix}`
   const url = `${SITE_URL}/${locale}${path}`
-  const ogImage = image || `${SITE_URL}/brand_assets/og-default.jpg`
+  const ogImage = image || DEFAULT_SHARE_IMAGE
 
   return {
     title: fullTitle,
@@ -151,7 +154,7 @@ export function newsArticleJsonLd(article: {
     '@type': 'NewsArticle',
     headline: article.title,
     description: article.description,
-    image: article.image || `${SITE_URL}/brand_assets/og-default.jpg`,
+    image: article.image || DEFAULT_SHARE_IMAGE,
     datePublished: article.datePublished,
     dateModified: article.dateModified || article.datePublished,
     author: {
@@ -240,7 +243,7 @@ export function videoObjectJsonLd(locale: string) {
     description: 'Polinar manufacturing facility and capabilities overview.',
     uploadDate: '2024-01-01',
     embedUrl: 'https://www.youtube.com/embed/wFziyAssgqk',
-    thumbnailUrl: `${SITE_URL}/brand_assets/og-default.jpg`,
+    thumbnailUrl: DEFAULT_SHARE_IMAGE,
     publisher: {
       '@type': 'Organization',
       name: labels.seo.siteName,

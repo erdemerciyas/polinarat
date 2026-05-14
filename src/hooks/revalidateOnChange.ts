@@ -58,6 +58,8 @@ export const revalidateGlobal: GlobalAfterChangeHook = async ({ doc, global }) =
 
   try {
     const { revalidatePath, revalidateTag } = await import('next/cache')
+    const { clearDictionaryCache } = await import('@/lib/getDictionary')
+    clearDictionaryCache()
 
     // Revalidate homepage for most globals
     revalidatePath('/[locale]', 'page')

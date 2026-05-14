@@ -27,6 +27,7 @@ import { NewsPageSettings } from '@/globals/NewsPageSettings'
 import { OurBusinessPageSettings } from '@/globals/OurBusinessPageSettings'
 
 import localesJson from '@/lib/locales.json'
+import { migrations } from '@/migrations/index'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -104,6 +105,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    prodMigrations: migrations,
   }),
 
   localization: {
@@ -119,6 +121,9 @@ export default buildConfig({
     const defaults = [
       { code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
       { code: 'tr', label: 'Türkçe', nativeLabel: 'Türkçe', shortLabel: 'TR', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
+      { code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 2 },
+      { code: 'ar', label: 'Arabic', nativeLabel: 'العربية', shortLabel: 'AR', isDefault: false, isActive: true, isRTL: true, sortOrder: 3 },
+      { code: 'ru', label: 'Russian', nativeLabel: 'Русский', shortLabel: 'RU', isDefault: false, isActive: true, isRTL: false, sortOrder: 4 },
     ]
 
     let created = false
@@ -130,9 +135,17 @@ export default buildConfig({
       })
 
       if (exists.totalDocs === 0) {
-        await payload.create({ collection: 'languages', data: lang })
-        created = true
-        payload.logger.info(`✓ Default language "${lang.code}" seeded into Languages collection`)
+        try {
+          await payload.create({ collection: 'languages', data: lang })
+          created = true
+          payload.logger.info(`✓ Default language "${lang.code}" seeded into Languages collection`)
+        } catch (err: unknown) {
+          const payloadErr = err as { data?: { errors?: { message?: string; path?: string }[] } }
+          const dup = payloadErr?.data?.errors?.some(
+            (e) => e.path === 'code' && e.message === 'Value must be unique',
+          )
+          if (!dup) throw err
+        }
       }
     }
 

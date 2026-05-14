@@ -1,8 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import { getStaticLabels } from '@/data/static-labels'
+import type { SiteContactInput, SiteSocialInput } from '@/lib/resolve-site-contact'
+import { resolveSiteContact, resolveSocialLinks } from '@/lib/resolve-site-contact'
 
 type FooterData = {
   labels?: {
@@ -49,9 +50,22 @@ function SocialIcon({ name }: { name: string }) {
   }
 }
 
-export function Footer({ data, locale }: { data?: FooterData | null; locale: string }) {
+export function Footer({
+  data,
+  locale,
+  siteContact,
+  socialMedia,
+}: {
+  data?: FooterData | null
+  locale: string
+  siteContact?: SiteContactInput
+  socialMedia?: SiteSocialInput
+}) {
   const cmsLabels = data?.labels || {}
   const staticLabels = getStaticLabels(locale)
+  const resolved = resolveSiteContact(siteContact, staticLabels.company)
+  const addressLines = resolved.address.split('\n')
+  const socialLinks = resolveSocialLinks(socialMedia, staticLabels.company.socialLinks)
 
   return (
     <footer className="relative bg-navy-deep text-white grain-overlay overflow-hidden">
@@ -77,7 +91,7 @@ export function Footer({ data, locale }: { data?: FooterData | null; locale: str
           <div>
             <h4 className="font-display font-bold text-sm uppercase tracking-wider mb-5 text-white/90">{cmsLabels.addressLabel || ''}</h4>
             <p className="text-white/60 font-body text-sm leading-body">
-              {staticLabels.company.address.split('\n').map((line, i, arr) => (
+              {addressLines.map((line, i, arr) => (
                 <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
               ))}
             </p>
@@ -86,17 +100,17 @@ export function Footer({ data, locale }: { data?: FooterData | null; locale: str
           <div>
             <h4 className="font-display font-bold text-sm uppercase tracking-wider mb-5 text-white/90">{cmsLabels.phoneFaxLabel || ''}</h4>
             <div className="space-y-2 text-white/60 font-body text-sm">
-              {staticLabels.company.phones.map((phone) => (
+              {resolved.phones.map((phone) => (
                 <p key={phone}>{phone}</p>
               ))}
-              <p>{staticLabels.company.fax}</p>
+              {resolved.fax ? <p>{resolved.fax}</p> : null}
             </div>
           </div>
 
           <div>
             <h4 className="font-display font-bold text-sm uppercase tracking-wider mb-5 text-white/90">{cmsLabels.emailLabel || ''}</h4>
-            <a href={`mailto:${staticLabels.company.email}`} className="text-white/60 font-body text-sm hover:text-polinar-mustard transition-colors">
-              {staticLabels.company.email}
+            <a href={`mailto:${resolved.email}`} className="text-white/60 font-body text-sm hover:text-polinar-mustard transition-colors">
+              {resolved.email}
             </a>
           </div>
 
@@ -121,7 +135,7 @@ export function Footer({ data, locale }: { data?: FooterData | null; locale: str
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/40 font-body text-xs">{data?.copyrightText || ''}</p>
           <div className="flex items-center gap-3">
-            {staticLabels.company.socialLinks.map(({ name, url }) => (
+            {socialLinks.map(({ name, url }) => (
               <a
                 key={name}
                 href={url}

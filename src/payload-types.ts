@@ -102,8 +102,8 @@ export interface Config {
     | ('false' | 'none' | 'null')
     | false
     | null
-    | ('ru' | 'en' | 'de' | 'ar' | 'tr')
-    | ('ru' | 'en' | 'de' | 'ar' | 'tr')[];
+    | ('tr' | 'en' | 'de' | 'ar')
+    | ('tr' | 'en' | 'de' | 'ar')[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -126,7 +126,7 @@ export interface Config {
     'our-business-page-settings': OurBusinessPageSettingsSelect<false> | OurBusinessPageSettingsSelect<true>;
     'ui-labels': UiLabelsSelect<false> | UiLabelsSelect<true>;
   };
-  locale: 'ru' | 'en' | 'de' | 'ar' | 'tr';
+  locale: 'tr' | 'en' | 'de' | 'ar';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -1482,9 +1482,18 @@ export interface HomepageSetting {
      */
     description?: string | null;
     /**
-     * Image displayed next to the about text on the homepage
+     * Large image in the right column of the homepage About block (not the faint watermark — use About Preview Decoration for that).
      */
     image?: (number | null) | Media;
+  };
+  /**
+   * Background artwork for the About Preview block (optional).
+   */
+  aboutPreviewDecor?: {
+    /**
+     * Large faint image behind the text column on desktop. Uses a default if empty.
+     */
+    leftWatermark?: (number | null) | Media;
   };
   businessSection?: {
     /**
@@ -1761,6 +1770,9 @@ export interface ContactPageSetting {
    */
   info?: {
     addressLabel?: string | null;
+    /**
+     * Optional. If Site Settings → Contact → Address is set, that value is shown instead.
+     */
     addressText?: string | null;
     phoneLabel?: string | null;
     emailLabel?: string | null;
@@ -2120,6 +2132,11 @@ export interface HomepageSettingsSelect<T extends boolean = true> {
         title?: T;
         description?: T;
         image?: T;
+      };
+  aboutPreviewDecor?:
+    | T
+    | {
+        leftWatermark?: T;
       };
   businessSection?:
     | T

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getStaticLabels } from '@/data/static-labels'
 import Image from 'next/image'
+import { getBestMediaUrl } from '@/lib/media-url'
 import { generateSEO, getSiteDefaultDescription, breadcrumbJsonLd, JsonLd, SITE_URL, videoObjectJsonLd, faqPageJsonLd } from '@/lib/seo'
 import { CounterAnimation } from '@/components/about/CounterAnimation'
 import { VideoPlayer } from '@/components/about/VideoPlayer'
@@ -17,9 +18,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let aboutSettings: any = null
   let dictionary: any = {}
   try {
+    const { getAboutPageSettings } = await import('@/lib/about-page-data')
+    aboutSettings = await getAboutPageSettings(locale)
+  } catch {}
+  try {
     const { getDictionary } = await import('@/lib/getDictionary')
     dictionary = await getDictionary(locale)
-    aboutSettings = dictionary['about-page-settings'] || null
   } catch {}
 
   const labels = dictionary['static-content']?.['static-labels'] || getStaticLabels(locale)
@@ -32,12 +36,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     aboutSettings?.story?.paragraph1?.slice(0, 160) ||
     defaultDesc
 
+  const og = getBestMediaUrl(seo?.image) || getBestMediaUrl(aboutSettings?.hero?.backgroundImage)
   return generateSEO({
     title,
     description,
     locale,
     path: '/about',
-    image: seo.image?.url || aboutSettings?.hero?.backgroundImage?.url,
+    image: og || undefined,
   })
 }
 
@@ -46,9 +51,12 @@ export default async function AboutPage({ params }: Props) {
   let aboutSettings: any = null
   let dictionary: any = {}
   try {
+    const { getAboutPageSettings } = await import('@/lib/about-page-data')
+    aboutSettings = await getAboutPageSettings(locale)
+  } catch {}
+  try {
     const { getDictionary } = await import('@/lib/getDictionary')
     dictionary = await getDictionary(locale)
-    aboutSettings = dictionary['about-page-settings'] || null
   } catch {}
 
   const labels = dictionary['static-content']?.['static-labels'] || getStaticLabels(locale)
@@ -63,13 +71,16 @@ export default async function AboutPage({ params }: Props) {
 
   const galleryImages = (gallery.images || [])
     .map((img: any) => ({
-      image: { url: img.image?.url || null, alt: img.image?.alt || img.caption || '' },
+      image: {
+        url: getBestMediaUrl(img.image),
+        alt: (img.image && typeof img.image === 'object' && 'alt' in img.image ? img.image.alt : null) || img.caption || '',
+      },
       caption: img.caption,
       size: img.size || 'normal',
     }))
     .filter((img: any) => img.image.url)
 
-  const certItems = (certificates.items || []).filter((c: any) => c.image?.url)
+  const certItems = (certificates.items || []).filter((c: any) => getBestMediaUrl(c.image))
 
   return (
     <>
@@ -83,10 +94,10 @@ export default async function AboutPage({ params }: Props) {
       )}
       {/* ===== 1. HERO ===== */}
       <section className="relative min-h-[420px] lg:min-h-[520px] flex items-center overflow-hidden pt-[72px]">
-        {hero.backgroundImage?.url ? (
+        {getBestMediaUrl(hero.backgroundImage) ? (
           <Image
-            src={hero.backgroundImage.url}
-            alt={hero.backgroundImage.alt || hero.title || 'About Polinar'}
+            src={getBestMediaUrl(hero.backgroundImage)!}
+            alt={(hero.backgroundImage && typeof hero.backgroundImage === 'object' && hero.backgroundImage.alt) || hero.title || 'About Polinar'}
             fill
             sizes="100vw"
             priority
@@ -181,10 +192,10 @@ export default async function AboutPage({ params }: Props) {
 
             <ScrollReveal direction="right">
               <div className="relative">
-                {story.mainImage?.url && (
+                {getBestMediaUrl(story.mainImage) && (
                   <div className="relative z-[1] aspect-[4/3]">
                     <Image
-                      src={story.mainImage.url}
+                      src={getBestMediaUrl(story.mainImage)!}
                       alt={story.mainImage.alt || labels.about.factoryAlt}
                       fill
                       sizes="(max-width: 1024px) 100vw, 50vw"
@@ -194,10 +205,10 @@ export default async function AboutPage({ params }: Props) {
                   </div>
                 )}
 
-                {story.accentImage?.url && (
+                {getBestMediaUrl(story.accentImage) && (
                   <div className="absolute -bottom-6 -left-6 lg:-bottom-8 lg:-left-10 w-[45%] z-[2] shadow-2xl rounded-card overflow-hidden border-4 border-white">
                     <Image
-                      src={story.accentImage.url}
+                      src={getBestMediaUrl(story.accentImage)!}
                       alt={story.accentImage.alt || labels.about.productionAlt}
                       width={300}
                       height={200}
@@ -289,7 +300,7 @@ export default async function AboutPage({ params }: Props) {
             <ScrollReveal delay={0.2}>
               <VideoPlayer
                 videoUrl={video.videoUrl}
-                thumbnailUrl={video.thumbnailImage?.url || null}
+                thumbnailUrl={getBestMediaUrl(video.thumbnailImage)}
                 title={video.title}
                 locale={locale}
               />
@@ -326,7 +337,7 @@ export default async function AboutPage({ params }: Props) {
                   >
                     <div className="relative overflow-hidden rounded-card-sm mb-3 bg-white p-3 aspect-[3/4] flex items-center justify-center">
                       <Image
-                        src={cert.image.url}
+                        src={getBestMediaUrl(cert.image)!}
                         alt={cert.image.alt || cert.name || labels.about.certificateAlt}
                         width={200}
                         height={267}

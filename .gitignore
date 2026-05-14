@@ -10,3 +10,6 @@ temporary screenshots/
 
 .vercel
 .env*.local
+
+# Local DB dumps (may contain secrets)
+polinar-db-export*.sql

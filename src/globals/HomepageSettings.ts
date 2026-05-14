@@ -248,7 +248,29 @@ export const HomepageSettings: GlobalConfig = {
           label: 'About Image',
           type: 'upload',
           relationTo: 'media',
-          admin: { description: 'Image displayed next to the about text on the homepage' },
+          admin: {
+            description:
+              'Large image in the right column of the homepage About block (not the faint watermark — use About Preview Decoration for that).',
+          },
+        },
+      ],
+    },
+    {
+      name: 'aboutPreviewDecor',
+      label: 'About Preview Decoration',
+      type: 'group',
+      admin: {
+        description: 'Background artwork for the About Preview block (optional).',
+      },
+      fields: [
+        {
+          name: 'leftWatermark',
+          label: 'Left watermark image',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            description: 'Large faint image behind the text column on desktop. Uses a default if empty.',
+          },
         },
       ],
     },

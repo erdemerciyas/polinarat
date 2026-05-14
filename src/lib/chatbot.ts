@@ -47,13 +47,20 @@ export async function getChatbotContext(locale: string) {
     const serviceList = businessAreas.length > 0 ? businessAreas.join('\n') : 'Business area data not available'
 
     const contact = settings as any
-    const contactInfo = `
-Phone: ${contact?.contact?.phone || '+90 212 549 88 20-21'}
-Fax: ${contact?.contact?.fax || '+90 212 549 88 19'}
-Email: ${contact?.contact?.email || 'info@polinar.com.tr'}
-WhatsApp: ${contact?.contact?.whatsapp || '+90 533 648 61 34'}
-Address: İkitelli OSB Eskoop San. Sit. D Blok No: 34, Başakşehir / İstanbul, Turkey
-`.trim()
+    const c = contact?.contact
+    const faxLine =
+      c && typeof c === 'object' && (c.fax ?? '').toString().trim()
+        ? `Fax: ${(c.fax ?? '').toString().trim()}`
+        : ''
+    const contactInfo = [
+      `Phone: ${c?.phone || '+90 212 549 88 20-21'}`,
+      faxLine,
+      `Email: ${c?.email || 'info@polinar.com.tr'}`,
+      `WhatsApp: ${c?.whatsapp || '+90 533 648 61 34'}`,
+      `Address: İkitelli OSB Eskoop San. Sit. D Blok No: 34, Başakşehir / İstanbul, Turkey`,
+    ]
+      .filter(Boolean)
+      .join('\n')
 
     return { productList, serviceList, contactInfo }
   } catch {

@@ -9,6 +9,12 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/Scr
 import { NewsSlider } from '@/components/NewsSlider'
 import { CoreValuesSection } from '@/components/CoreValuesSection'
 import { WhatsAppCTABar } from '@/components/layout/WhatsAppCTABar'
+import { getBestMediaUrl, withMediaCacheVersion } from '@/lib/media-url'
+
+const ABOUT_PREVIEW_FALLBACK_IMAGE =
+  'https://res.cloudinary.com/dtdogh9wg/image/upload/v1775050251/polinar/static/polinar-factory.jpg'
+const ABOUT_PREVIEW_DEFAULT_WATERMARK =
+  'https://res.cloudinary.com/dtdogh9wg/image/upload/v1775050253/polinar/static/polinar-robot.jpg'
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
@@ -155,6 +161,46 @@ export default async function HomePage({ params }: Props) {
   }
 
   const aboutPreview = homepageData?.aboutPreviewLabels || {}
+  /** Prefer labels-tab image, then legacy About Preview Section image; normalize /api/media → Cloudinary. */
+  const aboutPreviewImageMedia = (() => {
+    const labelsImg = aboutPreview.image
+    const legacyImg = homepageData?.aboutPreview?.image
+    if (getBestMediaUrl(labelsImg)) return labelsImg
+    if (getBestMediaUrl(legacyImg)) return legacyImg
+    return null
+  })()
+  const aboutPreviewImageUrl = getBestMediaUrl(aboutPreviewImageMedia) ?? ABOUT_PREVIEW_FALLBACK_IMAGE
+  const aboutPreviewImageUrlVersioned = withMediaCacheVersion(
+    aboutPreviewImageUrl,
+    aboutPreviewImageMedia,
+  )
+  const aboutPreviewImageKey =
+    typeof aboutPreviewImageMedia === 'object' &&
+    aboutPreviewImageMedia &&
+    'id' in aboutPreviewImageMedia &&
+    (aboutPreviewImageMedia as { id?: unknown }).id != null
+      ? String((aboutPreviewImageMedia as { id: unknown }).id)
+      : aboutPreviewImageUrlVersioned
+  const aboutPreviewImageAlt =
+    (typeof aboutPreviewImageMedia === 'object' &&
+      aboutPreviewImageMedia &&
+      typeof (aboutPreviewImageMedia as { alt?: string }).alt === 'string' &&
+      (aboutPreviewImageMedia as { alt: string }).alt) ||
+    'Polinar'
+  const aboutPreviewWatermarkUrl =
+    getBestMediaUrl(homepageData?.aboutPreviewDecor?.leftWatermark) ?? ABOUT_PREVIEW_DEFAULT_WATERMARK
+  const aboutPreviewWatermarkMedia = homepageData?.aboutPreviewDecor?.leftWatermark
+  const aboutPreviewWatermarkUrlVersioned = withMediaCacheVersion(
+    aboutPreviewWatermarkUrl,
+    aboutPreviewWatermarkMedia,
+  )
+  const aboutPreviewWatermarkKey =
+    typeof aboutPreviewWatermarkMedia === 'object' &&
+    aboutPreviewWatermarkMedia &&
+    'id' in aboutPreviewWatermarkMedia &&
+    (aboutPreviewWatermarkMedia as { id?: unknown }).id != null
+      ? String((aboutPreviewWatermarkMedia as { id: unknown }).id)
+      : aboutPreviewWatermarkUrlVersioned
   const businessSection = homepageData?.businessSection || {}
   const newsSection = homepageData?.newsSection || {}
 
@@ -271,7 +317,8 @@ export default async function HomePage({ params }: Props) {
       <section className="relative py-24 lg:py-32 bg-white overflow-hidden">
         <div className="hidden lg:block absolute inset-y-0 left-0 w-[45%] pointer-events-none select-none" aria-hidden="true">
           <Image
-            src="https://res.cloudinary.com/dtdogh9wg/image/upload/v1775050253/polinar/static/polinar-robot.jpg"
+            key={aboutPreviewWatermarkKey}
+            src={aboutPreviewWatermarkUrlVersioned}
             alt=""
             fill
             sizes="45vw"
@@ -303,8 +350,9 @@ export default async function HomePage({ params }: Props) {
             <ScrollReveal direction="right">
               <div className="relative aspect-[4/3] rounded-card-lg overflow-hidden shadow-card-hover">
                 <Image
-                  src={aboutPreview.image?.url || 'https://res.cloudinary.com/dtdogh9wg/image/upload/v1775050251/polinar/static/polinar-factory.jpg'}
-                  alt={aboutPreview.image?.alt || 'Polinar'}
+                  key={aboutPreviewImageKey}
+                  src={aboutPreviewImageUrlVersioned}
+                  alt={aboutPreviewImageAlt}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
