@@ -7,7 +7,8 @@ const SITE_HOSTNAME = getSiteHostnameFromEnv()
 const nextConfig: NextConfig = {
   // Core `lexical` only — externalizing `@payloadcms/richtext-lexical` breaks the admin
   // build (Node tries to load bundled.css as ESM). Avoids missing vendor-chunks/@lexical.js in dev.
-  serverExternalPackages: ['lexical'],
+  // `sharp` must stay external: bundling breaks native bindings on Vercel (linux-x64 / bytecode).
+  serverExternalPackages: ['lexical', 'sharp'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
