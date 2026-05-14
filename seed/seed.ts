@@ -15,14 +15,14 @@ async function seed() {
       await payload.create({
         collection: 'users',
         data: {
-          email: 'admin@polinar.com.tr',
+          email: 'admin@polinar.at',
           password: 'polinar2024',
           firstName: 'Admin',
           lastName: 'Polinar',
           role: 'admin',
         },
       })
-      console.log('✅ Admin user created: admin@polinar.com.tr / polinar2024')
+      console.log('✅ Admin user created: admin@polinar.at / polinar2024')
     } else {
       console.log('⏭️  Admin user already exists')
     }
@@ -211,7 +211,7 @@ async function seed() {
       data: {
         siteName: 'Polinar',
         contact: {
-          email: 'info@polinar.com.tr',
+          email: 'info@polinar.at',
           phone: '+90 212 549 88 20-21',
           fax: '+90 212 549 88 19',
           whatsapp: '+90 533 648 61 34',

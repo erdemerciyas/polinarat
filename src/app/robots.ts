@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
+import { getNormalizedSiteUrl } from '@/lib/site-url'
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.polinar.at'
+const SITE_URL = getNormalizedSiteUrl()
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { getPayloadClient } from '@/lib/payload'
 import localesConfig from '@/lib/locales.json'
+import { getNormalizedSiteUrl } from '@/lib/site-url'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.polinar.com.tr'
+const SITE_URL = getNormalizedSiteUrl()
 const locales = localesConfig.locales.map((l) => l.code)
 const defaultLocale = localesConfig.defaultLocale || 'en'
 

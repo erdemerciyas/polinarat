@@ -6,7 +6,7 @@ Corporate website for **Polinar** — a plastic injection mould and pipe fitting
 |--|--|
 | **Repository** | [github.com/erdemerciyas/polinarat](https://github.com/erdemerciyas/polinarat) |
 | **Maintainer** | [@erdemerciyas](https://github.com/erdemerciyas) |
-| **Production** | [www.polinar.com.tr](https://www.polinar.com.tr) |
+| **Production** | [www.polinar.at](https://www.polinar.at) |
 
 ## Tech Stack
 
@@ -59,7 +59,7 @@ cp .env.example .env
 | `PAYLOAD_SECRET` | Secret key for Payload auth/encryption |
 | `GOOGLE_VERTEX_API_KEY` | Google Vertex AI API key (for chatbot) |
 | `GOOGLE_VERTEX_MODEL` | Gemini model name (default: `gemini-2.5-flash`) |
-| `NEXT_PUBLIC_SITE_URL` | Canonical site URL (e.g. `https://www.polinar.com.tr`) |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL (e.g. `https://www.polinar.at`) |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret |

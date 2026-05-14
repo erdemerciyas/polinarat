@@ -1,9 +1,8 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
+import { getSiteHostnameFromEnv } from './src/lib/site-url'
 
-const SITE_HOSTNAME = process.env.NEXT_PUBLIC_SITE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname
-  : undefined
+const SITE_HOSTNAME = getSiteHostnameFromEnv()
 
 const nextConfig: NextConfig = {
   // Core `lexical` only — externalizing `@payloadcms/richtext-lexical` breaks the admin
@@ -13,8 +12,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'placehold.co' },
-      { protocol: 'https', hostname: 'www.polinar.com.tr' },
-      ...(SITE_HOSTNAME && SITE_HOSTNAME !== 'www.polinar.com.tr'
+      { protocol: 'https', hostname: 'www.polinar.at' },
+      ...(SITE_HOSTNAME && SITE_HOSTNAME !== 'www.polinar.at'
         ? [{ protocol: 'https' as const, hostname: SITE_HOSTNAME }]
         : []),
     ],

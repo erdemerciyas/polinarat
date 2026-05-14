@@ -55,7 +55,7 @@ export async function getChatbotContext(locale: string) {
     const contactInfo = [
       `Phone: ${c?.phone || '+90 212 549 88 20-21'}`,
       faxLine,
-      `Email: ${c?.email || 'info@polinar.com.tr'}`,
+      `Email: ${c?.email || 'info@polinar.at'}`,
       `WhatsApp: ${c?.whatsapp || '+90 533 648 61 34'}`,
       `Address: İkitelli OSB Eskoop San. Sit. D Blok No: 34, Başakşehir / İstanbul, Turkey`,
     ]
@@ -67,7 +67,7 @@ export async function getChatbotContext(locale: string) {
     return {
       productList: 'Product data not available',
       serviceList: 'Business area data not available',
-      contactInfo: 'Phone: +90 212 549 88 20-21\nEmail: info@polinar.com.tr',
+      contactInfo: 'Phone: +90 212 549 88 20-21\nEmail: info@polinar.at',
     }
   }
 }

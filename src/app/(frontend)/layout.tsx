@@ -4,11 +4,13 @@ import { getPayloadClient } from '@/lib/payload'
 import { fontClasses } from '@/lib/fonts'
 import { getActiveLanguages, isValidLocale } from '@/lib/i18n'
 import localesConfig from '@/lib/locales.json'
+import { getNormalizedSiteUrl } from '@/lib/site-url'
+import { VercelWebAnalytics } from '@/components/analytics/VercelWebAnalytics'
 
 import '../globals.css'
 
 const SITE_NAME = 'Polinar'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.polinar.com.tr'
+const SITE_URL = getNormalizedSiteUrl()
 const defaultLocaleCode = localesConfig.defaultLocale || 'en'
 
 export const metadata: Metadata = {
@@ -64,7 +66,10 @@ export default async function FrontendDocumentLayout({
       <head>
         {gscToken ? <meta name="google-site-verification" content={gscToken} /> : null}
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <VercelWebAnalytics />
+      </body>
     </html>
   )
 }

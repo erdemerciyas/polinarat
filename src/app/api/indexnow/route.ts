@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getPayloadClient } from '@/lib/payload'
+import { getNormalizedSiteUrl } from '@/lib/site-url'
 
 const INDEXNOW_URL = 'https://api.indexnow.org/Submit'
 
@@ -34,15 +35,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: 'IndexNow disabled or no API key' })
   }
 
-  const host = process.env.NEXT_PUBLIC_SITE_URL
-  if (!host) {
+  if (!process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
     return NextResponse.json({ ok: false, error: 'NEXT_PUBLIC_SITE_URL not configured' })
   }
 
+  const origin = getNormalizedSiteUrl()
+  let hostname: string
+  try {
+    hostname = new URL(origin).hostname
+  } catch {
+    return NextResponse.json({ ok: false, error: 'NEXT_PUBLIC_SITE_URL invalid' })
+  }
+
   const payload = {
-    host,
+    host: hostname,
     key: apiKey,
-    keyLocation: `${host}/${apiKey}.txt`,
+    keyLocation: `${origin}/${apiKey}.txt`,
     urlList: toSubmit,
   }
 

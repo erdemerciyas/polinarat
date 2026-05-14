@@ -111,7 +111,7 @@
 Hâlâ desteklenen fallback değişkenleri:
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://www.polinar.com.tr
+NEXT_PUBLIC_SITE_URL=https://www.polinar.at
 NEXT_PUBLIC_GSC_VERIFICATION_TOKEN=...  # Admin panelde yoksa kullanılır
 INDEXNOW_API_KEY=...                    # Admin panelde yoksa kullanılır
 ```

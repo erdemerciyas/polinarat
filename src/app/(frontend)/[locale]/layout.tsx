@@ -4,9 +4,7 @@ import { organizationJsonLd, JsonLd } from '@/lib/seo'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { ChatWidget } from '@/components/chatbot/ChatWidget'
-import { inject } from '@vercel/analytics'
-
-inject()
+import { toClientProps } from '@/lib/to-client-props'
 
 type Props = {
   children: React.ReactNode
@@ -45,19 +43,19 @@ export default async function LocaleLayout({ children, params }: Props) {
       <Header
         locale={locale}
         languages={languages}
-        navData={navData}
-        commonLabels={uiLabels}
+        navData={toClientProps(navData)}
+        commonLabels={toClientProps(uiLabels)}
       />
       <main>
         {children}
       </main>
       <Footer
-        data={footerData}
+        data={toClientProps(footerData)}
         locale={locale}
-        siteContact={siteSettings?.contact}
-        socialMedia={siteSettings?.socialMedia}
+        siteContact={toClientProps(siteSettings?.contact)}
+        socialMedia={toClientProps(siteSettings?.socialMedia)}
       />
-      <ChatWidget labels={siteSettings?.chatbot?.labels} />
+      <ChatWidget labels={toClientProps(siteSettings?.chatbot?.labels) ?? undefined} />
     </div>
   )
 }

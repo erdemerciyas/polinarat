@@ -10,6 +10,7 @@ import { NewsSlider } from '@/components/NewsSlider'
 import { CoreValuesSection } from '@/components/CoreValuesSection'
 import { WhatsAppCTABar } from '@/components/layout/WhatsAppCTABar'
 import { getBestMediaUrl, withMediaCacheVersion } from '@/lib/media-url'
+import { toClientProps } from '@/lib/to-client-props'
 
 const ABOUT_PREVIEW_FALLBACK_IMAGE =
   'https://res.cloudinary.com/dtdogh9wg/image/upload/v1775050251/polinar/static/polinar-factory.jpg'
@@ -204,35 +205,47 @@ export default async function HomePage({ params }: Props) {
   const businessSection = homepageData?.businessSection || {}
   const newsSection = homepageData?.newsSection || {}
 
+  const fallbackHeroSlides = [
+    {
+      title: 'DURABLE MOULDS AND CUSTOMIZED PRODUCTS',
+      subtitle: 'High quality plastic injection moulds for the global market',
+    },
+  ]
+  const heroSlidesRaw = homepageData?.heroSlides?.length
+    ? homepageData.heroSlides.map((s: any) => ({
+        title: s.title,
+        subtitle: s.subtitle,
+        backgroundImage: s.backgroundImage,
+        ctaLabel: s.ctaLabel,
+        ctaLink: s.ctaLink,
+        overlayOpacity: s.overlayOpacity,
+        textAlignment: s.textAlignment,
+        textPosition: s.textPosition,
+        titleSize: s.titleSize,
+        animateText: s.animateText,
+        textAnimation: s.textAnimation,
+      }))
+    : fallbackHeroSlides
+  const heroSlidesForClient = toClientProps(heroSlidesRaw) ?? fallbackHeroSlides
+  const sliderSettingsForClient = homepageData?.sliderSettings
+    ? toClientProps(homepageData.sliderSettings) ?? undefined
+    : undefined
+
+  const newsItemsRaw = (news?.docs || []).map((item: any) => ({
+    id: String(item.id),
+    slug: item.slug,
+    title: item.title,
+    excerpt: item.excerpt || '',
+    year: item.year || '',
+    date: item.date,
+    featuredImage: item.featuredImage,
+  }))
+  const newsItemsForClient = toClientProps(newsItemsRaw) ?? []
+
   return (
     <>
       <JsonLd data={websiteJsonLd()} />
-      <HeroSlider
-        slides={
-          homepageData?.heroSlides?.length
-            ? homepageData.heroSlides.map((s: any) => ({
-                title: s.title,
-                subtitle: s.subtitle,
-                backgroundImage: s.backgroundImage,
-                ctaLabel: s.ctaLabel,
-                ctaLink: s.ctaLink,
-                overlayOpacity: s.overlayOpacity,
-                textAlignment: s.textAlignment,
-                textPosition: s.textPosition,
-                titleSize: s.titleSize,
-                animateText: s.animateText,
-                textAnimation: s.textAnimation,
-              }))
-            : [
-                {
-                  title: 'DURABLE MOULDS AND CUSTOMIZED PRODUCTS',
-                  subtitle: 'High quality plastic injection moulds for the global market',
-                },
-              ]
-        }
-        settings={homepageData?.sliderSettings ?? undefined}
-        locale={locale}
-      />
+      <HeroSlider slides={heroSlidesForClient} settings={sliderSettingsForClient} locale={locale} />
 
       {/* Core Values */}
       <CoreValuesSection
@@ -376,15 +389,7 @@ export default async function HomePage({ params }: Props) {
         </div>
         <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <NewsSlider
-            items={(news?.docs || []).map((item: any) => ({
-              id: item.id,
-              slug: item.slug,
-              title: item.title,
-              excerpt: item.excerpt || '',
-              year: item.year || '',
-              date: item.date,
-              featuredImage: item.featuredImage,
-            }))}
+            items={newsItemsForClient}
             locale={locale}
             sectionLabel={newsSection.label || ''}
             sectionTitle={newsSection.title || ''}

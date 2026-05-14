@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { getStaticLabels } from '@/data/static-labels'
 import localesConfig from '@/lib/locales.json'
+import { getNormalizedSiteUrl } from '@/lib/site-url'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.polinar.com.tr'
+const SITE_URL = getNormalizedSiteUrl()
 
 /** Fallback Open Graph / article image when CMS image is missing (file lives in public/brand_assets/). */
 const DEFAULT_SHARE_IMAGE = `${SITE_URL}/brand_assets/logo.png`
