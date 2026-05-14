@@ -9,7 +9,7 @@
   "scripts": {
     "postinstall": "patch-package",
     "dev": "npx kill-port 3000 && next dev --port 3000",
-    "build": "next build",
+    "build": "npm rebuild sharp && next build",
     "start": "npx kill-port 3000 && next start --port 3000",
     "lint": "next lint",
     "payload": "payload",
