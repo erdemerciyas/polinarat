@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "npx kill-port 3000 && next dev --port 3000",
     "build": "next build",
@@ -23,6 +26,7 @@
     "@google/genai": "^1.50.1",
     "@payloadcms/db-postgres": "^3.0.0",
     "@payloadcms/next": "^3.0.0",
+    "@payloadcms/plugin-cloud-storage": "^3.0.0",
     "@payloadcms/plugin-seo": "^3.0.0",
     "@payloadcms/richtext-lexical": "^3.0.0",
     "@vercel/analytics": "^2.0.1",
@@ -54,5 +58,11 @@
     "tailwindcss": "^3.4.0",
     "tsx": "^4.0.0",
     "typescript": "^5.6.0"
+  },
+  "overrides": {
+    "payloadcms-storage-cloudinary": {
+      "payload": "$payload",
+      "@payloadcms/plugin-cloud-storage": "$@payloadcms/plugin-cloud-storage"
+    }
   }
 }

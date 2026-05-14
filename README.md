@@ -2,6 +2,8 @@
 
 Corporate website for **Polinar** — a plastic injection mould and pipe fittings manufacturer. Built with **Next.js 15**, **Payload CMS 3**, **PostgreSQL**, and **Cloudinary** media storage.
 
+**Repository:** [github.com/erdemerciyas/polinarat](https://github.com/erdemerciyas/polinarat)
+
 **Live:** [www.polinar.com.tr](https://www.polinar.com.tr)
 
 ## Tech Stack
@@ -12,7 +14,7 @@ Corporate website for **Polinar** — a plastic injection mould and pipe fitting
 | UI | React 19, Tailwind CSS 3, Framer Motion |
 | CMS | Payload CMS 3 (admin at `/admin`) |
 | Database | PostgreSQL (Neon) via `@payloadcms/db-postgres` |
-| Media Storage | Cloudinary via `payloadcms-storage-cloudinary` |
+| Media Storage | Cloudinary (`payloadcms-storage-cloudinary`, `@payloadcms/plugin-cloud-storage`) |
 | Rich Text | Lexical Editor (`@payloadcms/richtext-lexical`) |
 | SEO | `@payloadcms/plugin-seo`, JSON-LD, dynamic sitemap |
 | AI Chatbot | Google Vertex AI (Gemini) |
@@ -25,7 +27,7 @@ Corporate website for **Polinar** — a plastic injection mould and pipe fitting
 
 ### Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 20.9 or newer (see `engines` in `package.json`)
 - **PostgreSQL** database (e.g. [Neon](https://neon.tech))
 - **Cloudinary** account for media storage
 - **npm** (or compatible package manager)
@@ -33,10 +35,12 @@ Corporate website for **Polinar** — a plastic injection mould and pipe fitting
 ### Installation
 
 ```bash
-git clone https://github.com/erdemerciyas/polinar.git
-cd polinar
+git clone https://github.com/erdemerciyas/polinarat.git
+cd polinarat
 npm install
 ```
+
+`payloadcms-storage-cloudinary` pins an older nested `payload` in its own metadata; this repo uses **npm `overrides`** so all Payload packages resolve to a single version. Use **npm** (not necessarily `pnpm`/`yarn`) unless you replicate the same override behaviour.
 
 ### Environment Variables
 
@@ -198,10 +202,11 @@ npm run i18n:create-page {slug}
 
 This project is deployed on **Vercel**. Environment variables must be configured in the Vercel dashboard:
 
-1. Go to your Vercel project settings > Environment Variables
-2. Add all variables from `.env.example`
-3. Set `NEXT_PUBLIC_SITE_URL` to your production domain
-4. Pushes to `main` trigger automatic deployments
+1. Import or connect this repo: [erdemerciyas/polinarat](https://github.com/erdemerciyas/polinarat)
+2. Go to your Vercel project settings → Environment Variables
+3. Add all variables from `.env.example`
+4. Set `NEXT_PUBLIC_SITE_URL` to your production domain
+5. Pushes to `main` trigger automatic deployments (when Git integration is enabled)
 
 ## License
 
