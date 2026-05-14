@@ -2,9 +2,11 @@
 
 Corporate website for **Polinar** — a plastic injection mould and pipe fittings manufacturer. Built with **Next.js 15**, **Payload CMS 3**, **PostgreSQL**, and **Cloudinary** media storage.
 
-**Repository:** [github.com/erdemerciyas/polinarat](https://github.com/erdemerciyas/polinarat)
-
-**Live:** [www.polinar.com.tr](https://www.polinar.com.tr)
+| | |
+|--|--|
+| **Repository** | [github.com/erdemerciyas/polinarat](https://github.com/erdemerciyas/polinarat) |
+| **Maintainer** | [@erdemerciyas](https://github.com/erdemerciyas) |
+| **Production** | [www.polinar.com.tr](https://www.polinar.com.tr) |
 
 ## Tech Stack
 
@@ -21,6 +23,7 @@ Corporate website for **Polinar** — a plastic injection mould and pipe fitting
 | PDF Catalogs | pdf-lib |
 | Image Processing | Sharp |
 | Language | TypeScript 5 |
+| Analytics | `@vercel/analytics` (production on Vercel) |
 | Deployment | Vercel |
 
 ## Getting Started
@@ -173,7 +176,7 @@ npm run i18n:create-page {slug}
 - **Site Search** — full-text search overlay across CMS pages, news, and static product data (`/api/search`)
 - **News & Articles** — CMS-managed with SEO metadata and drag-enabled news slider
 - **About Page** — Cloudinary-hosted gallery, video player, scroll-triggered counter animations with corner accents and glow effects
-- **Contact Page** — floating-label form, asymmetric layout, premium card styling, animated info cards
+- **Contact Page** — floating-label form posts to `/api/contact`; submissions are saved to Payload (**Contact Messages** / `contact-submissions`) and reviewed in `/admin` — no outbound SMTP is wired by default
 - **Newsletter** — subscription management
 - **AI Chatbot** — Google Vertex AI (Gemini)-powered support widget
 - **Cloudinary Media** — all media assets stored and served via Cloudinary CDN
