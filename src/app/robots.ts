@@ -1,10 +1,7 @@
 import type { MetadataRoute } from 'next'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
-
-if (!SITE_URL) {
-  throw new Error('NEXT_PUBLIC_SITE_URL is required')
-}
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.polinar.at'
 
 export default function robots(): MetadataRoute.Robots {
   return {
