@@ -7,6 +7,7 @@
     "node": ">=20.9.0"
   },
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "npx kill-port 3000 && next dev --port 3000",
     "build": "next build",
     "start": "npx kill-port 3000 && next start --port 3000",
@@ -54,6 +55,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
     "kill-port": "^2.0.1",
+    "patch-package": "^8.0.1",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "tsx": "^4.0.0",

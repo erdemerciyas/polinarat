@@ -63,6 +63,13 @@ cp .env.example .env
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret |
+| `PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM` | Optional: set to `true` to restore Payload’s interactive “dev push / data loss” migration prompt (defaults off so `next build` never hangs on Vercel). |
+
+### Payload migrations on Vercel
+
+`next build` runs **`prodMigrations`** against `DATABASE_URL`. If `payload-migrations` contains a dev-schema marker (**batch `-1`**), upstream Payload reads stdin for confirmation and **non‑TTY builds hang forever**.
+
+This repo patches `@payloadcms/drizzle` so confirmation **defaults to automatic**. Use **`PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM=true`** only when you intentionally want the prompt (manual CLI against prod).
 
 ### Development
 
@@ -210,6 +217,8 @@ This project is deployed on **Vercel**. Environment variables must be configured
 3. Add all variables from `.env.example`
 4. Set `NEXT_PUBLIC_SITE_URL` to your production domain
 5. Pushes to `main` trigger automatic deployments (when Git integration is enabled)
+
+Ensure `npm install` runs on Vercel (default) so **`patch-package`** applies [`patches/@payloadcms+drizzle+3.84.1.patch`](patches/@payloadcms+drizzle+3.84.1.patch). After upgrading `@payloadcms/drizzle`, regenerate or remove that patch if install fails.
 
 ## License
 

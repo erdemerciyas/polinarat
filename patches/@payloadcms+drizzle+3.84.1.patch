@@ -1,0 +1,41 @@
+diff --git a/node_modules/@payloadcms/drizzle/dist/migrate.js b/node_modules/@payloadcms/drizzle/dist/migrate.js
+index 2dbae1f..4a77d8d 100644
+--- a/node_modules/@payloadcms/drizzle/dist/migrate.js
++++ b/node_modules/@payloadcms/drizzle/dist/migrate.js
+@@ -28,16 +28,26 @@ export const migrate = async function migrate(args) {
+             sort: '-name'
+         }));
+         if (migrationsInDB.find((m)=>m.batch === -1)) {
+-            const { confirm: runMigrations } = await prompts({
+-                name: 'confirm',
+-                type: 'confirm',
+-                initial: false,
+-                message: "It looks like you've run Payload in dev mode, meaning you've dynamically pushed changes to your database.\n\n" + "If you'd like to run migrations, data loss will occur. Would you like to proceed?"
+-            }, {
+-                onCancel: ()=>{
+-                    process.exit(0);
+-                }
+-            });
++            let runMigrations = false;
++            const mustConfirm = process.env.PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM === 'true';
++            if (!mustConfirm) {
++                payload.logger.warn({
++                    msg: 'payload-migrations contains dev push marker (batch -1). Proceeding without interactive confirmation. Set PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM=true if you must be prompted (e.g. manual CLI against production).'
++                });
++                runMigrations = true;
++            } else {
++                const answer = await prompts({
++                    name: 'confirm',
++                    type: 'confirm',
++                    initial: false,
++                    message: "It looks like you've run Payload in dev mode, meaning you've dynamically pushed changes to your database.\n\n" + "If you'd like to run migrations, data loss will occur. Would you like to proceed?"
++                }, {
++                    onCancel: ()=>{
++                        process.exit(0);
++                    }
++                });
++                runMigrations = answer.confirm;
++            }
+             if (!runMigrations) {
+                 process.exit(0);
+             }
