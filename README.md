@@ -184,6 +184,7 @@ npm run i18n:create-page {slug}
 - **News & Articles** — CMS-managed with SEO metadata and drag-enabled news slider
 - **About Page** — Cloudinary-hosted gallery, video player, scroll-triggered counter animations with corner accents and glow effects
 - **Contact Page** — floating-label form posts to `/api/contact`; submissions are saved to Payload (**Contact Messages** / `contact-submissions`) and reviewed in `/admin` — no outbound SMTP is wired by default
+- **Auto Map Embed from Address** — entering an address in Site Settings automatically generates a Google Maps embed URL pointing to that location; explicit `googleMapsEmbed` URL still takes priority
 - **Newsletter** — subscription management
 - **AI Chatbot** — Google Vertex AI (Gemini)-powered support widget
 - **Cloudinary Media** — all media assets stored and served via Cloudinary CDN
