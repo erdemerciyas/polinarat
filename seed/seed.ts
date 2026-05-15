@@ -32,15 +32,15 @@ async function seed() {
 
   // 2. Seed Product Categories
   const products = [
-    { name: { en: 'PPR-C Sanitary Fittings Moulds', tr: 'PPR-C Sıhhi Tesisat Kalıpları' }, slug: 'pprc-sanitary-fittings', materials: { en: 'PPR-C (Polypropylene Random Copolymer)', tr: 'PPR-C (Polipropilen Random Kopolimer)' }, sortOrder: 1 },
-    { name: { en: 'PPR-C Industrial Moulds', tr: 'PPR-C Endüstriyel Kalıplar' }, slug: 'pprc-industrial', materials: { en: 'PPR-C Industrial Grade', tr: 'PPR-C Endüstriyel Kalite' }, sortOrder: 2 },
-    { name: { en: 'HDPE Butt Fusion Moulds', tr: 'HDPE Alın Kaynak Kalıpları' }, slug: 'hdpe-butt-fusion', materials: { en: 'HDPE (High Density Polyethylene)', tr: 'HDPE (Yüksek Yoğunluklu Polietilen)' }, sortOrder: 3 },
-    { name: { en: 'HDPE Electrofusion Moulds', tr: 'HDPE Elektrofüzyon Kalıpları' }, slug: 'hdpe-electrofusion', materials: { en: 'HDPE Electrofusion Grade', tr: 'HDPE Elektrofüzyon Kalite' }, sortOrder: 4 },
-    { name: { en: 'PVC Moulds', tr: 'PVC Kalıplar' }, slug: 'pvc', materials: { en: 'PVC (Polyvinyl Chloride)', tr: 'PVC (Polivinil Klorür)' }, sortOrder: 5 },
-    { name: { en: 'PP Silent Waste Water Moulds', tr: 'PP Sessiz Atık Su Kalıpları' }, slug: 'pp-silent-waste', materials: { en: 'PP (Polypropylene)', tr: 'PP (Polipropilen)' }, sortOrder: 6 },
-    { name: { en: 'Irrigation Moulds', tr: 'Sulama Kalıpları' }, slug: 'irrigation', materials: { en: 'Various polymers', tr: 'Çeşitli polimerler' }, sortOrder: 7 },
-    { name: { en: 'Injection Services', tr: 'Enjeksiyon Hizmetleri' }, slug: 'injection-services', materials: { en: 'Multi-material', tr: 'Çoklu malzeme' }, sortOrder: 8 },
-    { name: { en: 'Custom Moulds', tr: 'Özel Kalıplar' }, slug: 'custom', materials: { en: 'Custom specifications', tr: 'Özel spesifikasyonlar' }, sortOrder: 9 },
+    { name: 'PPR-C Sanitary Fittings Moulds', slug: 'pprc-sanitary-fittings', materials: 'PPR-C (Polypropylene Random Copolymer)', sortOrder: 1 },
+    { name: 'PPR-C Industrial Moulds', slug: 'pprc-industrial', materials: 'PPR-C Industrial Grade', sortOrder: 2 },
+    { name: 'HDPE Butt Fusion Moulds', slug: 'hdpe-butt-fusion', materials: 'HDPE (High Density Polyethylene)', sortOrder: 3 },
+    { name: 'HDPE Electrofusion Moulds', slug: 'hdpe-electrofusion', materials: 'HDPE Electrofusion Grade', sortOrder: 4 },
+    { name: 'PVC Moulds', slug: 'pvc', materials: 'PVC (Polyvinyl Chloride)', sortOrder: 5 },
+    { name: 'PP Silent Waste Water Moulds', slug: 'pp-silent-waste', materials: 'PP (Polypropylene)', sortOrder: 6 },
+    { name: 'Irrigation Moulds', slug: 'irrigation', materials: 'Various polymers', sortOrder: 7 },
+    { name: 'Injection Services', slug: 'injection-services', materials: 'Multi-material', sortOrder: 8 },
+    { name: 'Custom Moulds', slug: 'custom', materials: 'Custom specifications', sortOrder: 9 },
   ]
 
   for (const product of products) {
@@ -51,30 +51,19 @@ async function seed() {
         limit: 1,
       })
       if (existing.docs.length === 0) {
-        // Create with EN first
+        // Create product
         const doc = await payload.create({
           collection: 'product-categories',
-          locale: 'en',
           data: {
-            name: product.name.en,
+            name: product.name,
             slug: product.slug,
-            materials: product.materials.en,
+            materials: product.materials,
             sortOrder: product.sortOrder,
           },
         })
-        // Update TR locale
-        await payload.update({
-          collection: 'product-categories',
-          id: doc.id,
-          locale: 'tr',
-          data: {
-            name: product.name.tr,
-            materials: product.materials.tr,
-          },
-        })
-        console.log(`✅ Product: ${product.name.en}`)
+        console.log(`✅ Product: ${product.name}`)
       } else {
-        console.log(`⏭️  Product exists: ${product.name.en}`)
+        console.log(`⏭️  Product exists: ${product.name}`)
       }
     } catch (e) {
       console.log(`❌ Product error (${product.slug}):`, (e as Error).message)
@@ -83,9 +72,9 @@ async function seed() {
 
   // 3. Seed News
   const newsItems = [
-    { title: { en: 'Plastpol 2019 - Kielce, Poland', tr: 'Plastpol 2019 - Kielce, Polonya' }, slug: 'plastpol-2019', excerpt: { en: 'Polinar participated in Plastpol 2019 international plastics fair in Kielce, Poland.', tr: 'Polinar, Polonya Kielce\'de düzenlenen Plastpol 2019 uluslararası plastik fuarına katıldı.' }, date: '2019-05-28', year: '2019' },
-    { title: { en: 'Plast Eurasia 2018 - Istanbul', tr: 'Plast Eurasia 2018 - İstanbul' }, slug: 'plast-eurasia-2018', excerpt: { en: 'Polinar showcased latest products at Plast Eurasia Istanbul 2018.', tr: 'Polinar, Plast Eurasia İstanbul 2018 fuarında son ürünlerini sergiledi.' }, date: '2018-12-05', year: '2018' },
-    { title: { en: 'Arabplast 2017 - Dubai, UAE', tr: 'Arabplast 2017 - Dubai, BAE' }, slug: 'arabplast-2017', excerpt: { en: 'Polinar exhibited at Arabplast 2017 in Dubai.', tr: 'Polinar, Dubai\'de Arabplast 2017 fuarına katıldı.' }, date: '2017-01-08', year: '2017' },
+    { title: 'Plastpol 2019 - Kielce, Poland', slug: 'plastpol-2019', excerpt: 'Polinar participated in Plastpol 2019 international plastics fair in Kielce, Poland.', date: '2019-05-28', year: '2019' },
+    { title: 'Plast Eurasia 2018 - Istanbul', slug: 'plast-eurasia-2018', excerpt: 'Polinar showcased latest products at Plast Eurasia Istanbul 2018.', date: '2018-12-05', year: '2018' },
+    { title: 'Arabplast 2017 - Dubai, UAE', slug: 'arabplast-2017', excerpt: 'Polinar exhibited at Arabplast 2017 in Dubai.', date: '2017-01-08', year: '2017' },
   ]
 
   for (const item of newsItems) {
@@ -96,26 +85,19 @@ async function seed() {
         limit: 1,
       })
       if (existing.docs.length === 0) {
-        const doc = await payload.create({
+        await payload.create({
           collection: 'news',
-          locale: 'en',
           data: {
-            title: item.title.en,
+            title: item.title,
             slug: item.slug,
-            excerpt: item.excerpt.en,
+            excerpt: item.excerpt,
             date: item.date,
             year: item.year,
             status: 'published',
             _status: 'published',
           },
         })
-        await payload.update({
-          collection: 'news',
-          id: doc.id,
-          locale: 'tr',
-          data: { title: item.title.tr, excerpt: item.excerpt.tr },
-        })
-        console.log(`✅ News: ${item.title.en}`)
+        console.log(`✅ News: ${item.title}`)
       }
     } catch (e) {
       console.log(`❌ News error:`, (e as Error).message)
@@ -159,7 +141,6 @@ async function seed() {
   try {
     await payload.updateGlobal({
       slug: 'homepage-settings',
-      locale: 'en',
       data: {
         heroSlides: [
           {
@@ -175,27 +156,6 @@ async function seed() {
         coreValues: {
           title: 'Quality / Robust / Durable / Reliable',
           description: 'POLINAR is one of the dynamic and leading companies in the field of manufacture of plastic injection moulds for plastic pipe and fittings.',
-        },
-      },
-    })
-    await payload.updateGlobal({
-      slug: 'homepage-settings',
-      locale: 'tr',
-      data: {
-        heroSlides: [
-          {
-            title: 'DAYANIKLI KALIPLAR VE ÖZEL ÜRÜNLER',
-            subtitle: '2000 yılından bu yana global pazara yüksek kaliteli plastik enjeksiyon kalıpları',
-            ...(slider1MediaId ? { backgroundImage: slider1MediaId } : {}),
-          },
-          {
-            title: 'MÜHENDİSLİK MÜKEMMELİYETİ',
-            subtitle: 'Son teknoloji CNC makineleri ve deneyimli mühendislik ekibi',
-          },
-        ],
-        coreValues: {
-          title: 'Kalite / Sağlam / Dayanıklı / Güvenilir',
-          description: 'POLINAR, plastik boru ve ekleme parçaları için plastik enjeksiyon kalıpları üretimi alanında dinamik ve öncü firmalardan biridir.',
         },
       },
     })

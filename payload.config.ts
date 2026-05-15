@@ -209,45 +209,12 @@ export default buildConfig({
       const megaCol = items[2]?.megaMenuColumns?.[0]
       const linkIds = megaCol?.links?.map((l: any) => l.id) || []
 
-      await payload.updateGlobal({
-        slug: 'navigation',
-        locale: 'tr',
-        context: { skipAutoTranslate: true },
-        data: {
-          mainMenu: [
-            { id: items[0].id, label: 'ANA SAYFA' },
-            { id: items[1].id, label: 'HAKKIMIZDA' },
-            {
-              id: items[2].id,
-              label: 'FAALİYETLERİMİZ',
-              megaMenuColumns: [
-                {
-                  id: megaCol.id,
-                  links: [
-                    { id: linkIds[0], label: 'Enjeksiyon Kalıpları', description: 'PPR-C, HDPE, PVC ve diğer boru sistemleri için yüksek kaliteli enjeksiyon kalıpları.' },
-                    { id: linkIds[1], label: 'Makine Parkuru', description: 'Modern CNC ve EDM makineleri ile hassas üretim kapasitesi.' },
-                    { id: linkIds[2], label: 'Plastik Test Ekipmanları', description: 'Kalite kontrol ve malzeme test hizmetleri.' },
-                  ],
-                },
-              ],
-            },
-            { id: items[3].id, label: 'HABERLER' },
-            { id: items[4].id, label: 'İLETİŞİM' },
-          ],
-          megaMenuCTA: {
-            title: 'Bize Ulaşın',
-            description: 'Projeleriniz için özel çözümler sunuyoruz. Bizimle iletişime geçin.',
-            button: 'İletişim',
-          },
-        },
-      })
-      payload.logger.info('✓ Navigation global seeded (en + tr)')
+      payload.logger.info('✓ Navigation global seeded (en only)')
     }
 
     // Seed HomepageSettings — heroSlides and labels are seeded independently
     const homepage = await payload.findGlobal({ slug: 'homepage-settings' })
 
-    // Seed heroSlides ONLY when the array is empty/missing (never overwrite admin content)
     if (!homepage.heroSlides?.length) {
       let slider1Id: number | null = null
       try {
@@ -296,24 +263,6 @@ export default buildConfig({
           ],
         },
       })
-      await payload.updateGlobal({
-        slug: 'homepage-settings',
-        locale: 'tr',
-        data: {
-          heroSlides: [
-            {
-              title: 'DAYANIKLI KALIPLAR VE ÖZEL ÜRÜNLER',
-              subtitle: '2000 yılından bu yana global pazara yüksek kaliteli plastik enjeksiyon kalıpları',
-              ...(slider1Id ? { backgroundImage: slider1Id } : {}),
-            },
-            {
-              title: 'MÜHENDİSLİK MÜKEMMELİYETİ',
-              subtitle: 'Son teknoloji CNC makineleri ve deneyimli mühendislik ekibi',
-            },
-          ],
-        },
-      })
-      payload.logger.info('✓ HomepageSettings heroSlides seeded (en + tr)')
     } else {
       // If slides exist but first slide lacks a background image, patch only the image
       const firstSlide = (homepage.heroSlides as any)?.[0]
@@ -372,16 +321,7 @@ export default buildConfig({
           newsSection: { label: 'Latest News', title: 'Fair Agenda', empty: 'News coming soon' },
         },
       })
-      await payload.updateGlobal({
-        slug: 'homepage-settings',
-        locale: 'tr',
-        data: {
-          aboutPreviewLabels: { label: 'Hakkımızda', title: '', description: 'POLINAR, plastik boru ve ekleme parçaları için plastik enjeksiyon kalıpları üretimi alanında dinamik ve öncü firmalardan biridir.' },
-          businessSection: { sectionLabel: 'Faaliyetlerimiz', sectionTitle: 'Ne Yapıyoruz?' },
-          newsSection: { label: 'Son Haberler', title: 'Fuar Gündemi', empty: 'Haberler yakında eklenecek' },
-        },
-      })
-      payload.logger.info('✓ HomepageSettings labels seeded (en + tr)')
+      payload.logger.info('✓ HomepageSettings labels seeded (en only)')
     }
 
     // Seed About Page Settings if empty
@@ -442,63 +382,7 @@ export default buildConfig({
           },
         },
       })
-      await payload.updateGlobal({
-        slug: 'about-page-settings',
-        locale: 'tr',
-        data: {
-          hero: {
-            label: 'Hakkımızda',
-            title: 'HAKKIMIZDA',
-            subtitle: '2000 yılından bu yana plastik enjeksiyon kalıpları alanında lider üretici',
-          },
-          story: {
-            title: 'Polinar Hakkında',
-            foundedYear: '2000',
-            paragraph1: 'POLINAR, en yüksek teknik düzeyde plastik boru ek parçaları üretimi için plastik enjeksiyon kalıpları üretimi ve bireysel müşteri siparişleri için proje geliştirme alanında dinamik ve öncü firmalardan biridir.',
-            paragraph2: 'POLINAR yenilikçiliği, yüksek teknolojiyi ve tutarlılığı teşvik eder. Şirket 2000 yılından bu yana bu alandaki deneyimini geliştirmekte ve enjeksiyon kalıpları tasarım ve üretiminde lider bir kuruluş olarak öne çıkmaya devam etmektedir.',
-            paragraph3: 'POLINAR\'ın kalıp tasarım ve üretimindeki yoğun deneyimi her projede gelişmektedir. Süreçleri iyileştirmek ve yenilikçi çözümler geliştirmek için daha fazla çaba harcıyoruz. Böylece müşterilerimizin orta ve uzun vadede rekabet avantajını güçlendirebileceğiz.',
-            ctaText: 'İletişim',
-            ctaLink: '/contact',
-          },
-          statistics: {
-            cards: [
-              { number: 2000, suffix: '', label: 'Kuruluş Yılı', icon: '📅' },
-              { number: 40, suffix: '+', label: 'İhracat Ülkesi', icon: '🌍' },
-              { number: 500, suffix: '+', label: 'Tamamlanan Proje', icon: '🏭' },
-              { number: 25, suffix: '+', label: 'Yıllık Deneyim', icon: '⚙️' },
-            ],
-          },
-          gallery: {
-            title: 'Üretim Alanından Fotoğraflar',
-            description: 'Modern CNC ve EDM makineleri ile donatılmış son teknoloji üretim tesisimizden görüntüler.',
-          },
-          video: {
-            title: 'Tanıtım Videosu',
-            description: 'Polinar ve üretim kapasitemiz hakkında daha fazla bilgi edinmek için kurumsal videomuzu izleyin.',
-            videoUrl: 'https://www.youtube.com/watch?v=wFziyAssgqk',
-          },
-          certificates: {
-            title: 'Sertifikalarımız',
-            description: 'Polinar\'ın önceliği tüm müşterilerinin çıkarlarını korumak ve kaliteli hizmet sunmaktır. Üretim sürecimizin tüm girdi ve çıktılarında, tüm yarı mamul ve mamul ürünlerin analizleri çok dikkatli bir şekilde yapılmaktadır.',
-            items: [
-              { name: 'ISO 9001', description: 'Kalite Yönetim Sistemi' },
-              { name: 'ISO 14001', description: 'Çevre Yönetim Sistemi' },
-              { name: 'ISO 45001', description: 'İş Sağlığı ve Güvenliği' },
-              { name: 'Entegre Politika', description: 'Çevre ve Kalite Politikası' },
-              { name: 'Tasarım Tescil Belgesi', description: 'Endüstriyel Tasarım Tescil Belgesi' },
-              { name: 'Marka Yenileme Belgesi', description: 'Polinar Marka Yenileme Belgesi' },
-              { name: 'Marka Tescil Belgesi', description: 'PTE Marka Tescil Belgesi' },
-            ],
-          },
-          cta: {
-            title: 'Detaylı Bilgi mi Gerekiyor?',
-            description: 'Ürünlerimiz ve hizmetlerimiz hakkında her türlü sorunuz için müşteri destek ekibimizle iletişime geçin.',
-            buttonText: 'WhatsApp ile İletişim',
-            buttonLink: 'https://wa.me/902125498820',
-          },
-        },
-      })
-      payload.logger.info('✓ About Page Settings seeded (en + tr)')
+      payload.logger.info('✓ About Page Settings seeded (en only)')
     }
 
     // Seed Contact Page Settings if empty
@@ -513,17 +397,7 @@ export default buildConfig({
           info: { addressLabel: 'Address', addressText: 'İkitelli OSB Eskoop San. Sit.\nD Blok No: 34\nBaşakşehir / İSTANBUL, TURKEY', phoneLabel: 'Phone / Fax', emailLabel: 'Email' },
         },
       })
-      await payload.updateGlobal({
-        slug: 'contact-page-settings',
-        locale: 'tr',
-        data: {
-          hero: { title: 'İLETİŞİM', subtitle: 'Bize Ulaşın' },
-          form: { nameLabel: 'Adınız', emailLabel: 'E-posta Adresiniz', subjectLabel: 'Konu', messageLabel: 'Mesajınız', sendButton: 'MESAJ GÖNDER', sendingButton: 'GÖNDERİLİYOR...' },
-          messages: { success: 'Mesajınız başarıyla gönderildi!', error: 'Mesaj gönderilemedi. Lütfen tekrar deneyin.' },
-          info: { addressLabel: 'Adres', addressText: 'İkitelli OSB Eskoop San. Sit.\nD Blok No: 34\nBaşakşehir / İSTANBUL, TÜRKİYE', phoneLabel: 'Telefon / Faks', emailLabel: 'E-posta' },
-        },
-      })
-      payload.logger.info('✓ Contact Page Settings seeded (en + tr)')
+      payload.logger.info('✓ Contact Page Settings seeded (en only)')
     }
 
     // Seed News Page Settings if empty
@@ -536,15 +410,7 @@ export default buildConfig({
           labels: { empty: 'News coming soon', breadcrumb: 'News', allNews: 'All News', cmsPlaceholder: 'Article content will be managed via CMS.' },
         },
       })
-      await payload.updateGlobal({
-        slug: 'news-page-settings',
-        locale: 'tr',
-        data: {
-          hero: { label: 'Son Gelişmeler', title: 'HABERLER & FUARLAR' },
-          labels: { empty: 'Haberler yakında eklenecek', breadcrumb: 'Haberler', allNews: 'Tüm Haberler', cmsPlaceholder: 'Haber içeriği CMS üzerinden yönetilecektir.' },
-        },
-      })
-      payload.logger.info('✓ News Page Settings seeded (en + tr)')
+      payload.logger.info('✓ News Page Settings seeded (en only)')
     }
 
     // Seed Our Business Page Settings if empty
@@ -556,14 +422,7 @@ export default buildConfig({
           seo: { title: 'Our Business', description: 'Explore Polinar\'s core business areas: injection moulds, precision machinery, and plastic testing equipment.' },
         },
       })
-      await payload.updateGlobal({
-        slug: 'our-business-page-settings',
-        locale: 'tr',
-        data: {
-          seo: { title: 'Faaliyetlerimiz', description: 'Polinar\'ın temel faaliyet alanlarını keşfedin: enjeksiyon kalıpları, hassas makineler ve plastik test ekipmanları.' },
-        },
-      })
-      payload.logger.info('✓ Our Business Page Settings seeded (en + tr)')
+      payload.logger.info('✓ Our Business Page Settings seeded (en only)')
     }
 
     // Seed Footer labels if empty
@@ -576,15 +435,7 @@ export default buildConfig({
           copyrightText: footerData.copyrightText || 'Copyright © 2026 All Rights Reserved by Polinar',
         },
       })
-      await payload.updateGlobal({
-        slug: 'footer',
-        locale: 'tr',
-        data: {
-          labels: { addressLabel: 'Adres', phoneFaxLabel: 'Telefon / Faks', emailLabel: 'E-posta', newsletterLabel: 'Bülten', subscribeButton: 'ABONE OL', namePlaceholder: 'İsim', emailPlaceholder: 'E-posta' },
-          copyrightText: 'Telif Hakkı © 2026 Tüm Hakları Saklıdır — Polinar',
-        },
-      })
-      payload.logger.info('✓ Footer labels seeded (en + tr)')
+      payload.logger.info('✓ Footer labels seeded (en only)')
     }
 
     // Seed SiteSettings chatbot labels + whatsapp text if empty
@@ -611,27 +462,7 @@ export default buildConfig({
           },
         },
       })
-      await payload.updateGlobal({
-        slug: 'site-settings',
-        locale: 'tr',
-        data: {
-          chatbot: {
-            labels: {
-              title: 'Polinar Destek',
-              welcome: 'Merhaba! Size nasıl yardımcı olabilirim?',
-              placeholder: 'Mesajınızı yazın...',
-              whatsappLabel: "WhatsApp'ta devam et",
-              closeLabel: 'Kapat',
-              errorMessage: 'Üzgünüz, bir hata oluştu.',
-              connectionError: 'Bağlantı hatası. Lütfen tekrar deneyin.',
-            },
-          },
-          whatsappCTA: {
-            text: 'Detaylı bilgi için whatsapp üzerinden müşteri desteğimizle iletişime geçin',
-          },
-        },
-      })
-      payload.logger.info('✓ SiteSettings chatbot/whatsapp labels seeded (en + tr)')
+      payload.logger.info('✓ SiteSettings chatbot/whatsapp labels seeded (en only)')
     }
 
     // Seed UiLabels (common only) if empty
@@ -641,12 +472,7 @@ export default buildConfig({
         slug: 'ui-labels',
         data: { learnMore: 'Learn More', readMore: 'Read More', contentComingSoon: 'Content coming soon.' },
       })
-      await payload.updateGlobal({
-        slug: 'ui-labels',
-        locale: 'tr',
-        data: { learnMore: 'Detaylar', readMore: 'Devamını Oku', contentComingSoon: 'İçerik yakında eklenecektir.' },
-      })
-      payload.logger.info('✓ UiLabels seeded (en + tr)')
+      payload.logger.info('✓ UiLabels seeded (en only)')
     }
   },
 
