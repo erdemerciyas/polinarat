@@ -9,6 +9,7 @@ import { CoreValues } from '../blocks/CoreValues'
 import { CertificatesGrid } from '../blocks/CertificatesGrid'
 import { CTABar } from '../blocks/CTABar'
 import { TwoColumnContent } from '../blocks/TwoColumnContent'
+import { revalidateCollection } from '@/hooks/revalidateOnChange'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -24,6 +25,13 @@ export const Pages: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [revalidateCollection],
+  },
+  cacheConfig: {
+    ttl: 60,
+    disableCacheOnUpdate: false,
   },
   fields: [
     {

@@ -67,12 +67,6 @@ cp .env.example .env
 
 ### Payload migrations on Vercel
 
-`next build` runs **`prodMigrations`** against `DATABASE_URL`. If `payload-migrations` contains a dev-schema marker (**batch `-1`**), upstream Payload reads stdin for confirmation and **non‑TTY builds hang forever**.
-
-This repo patches `@payloadcms/drizzle` so confirmation **defaults to automatic**. Use **`PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM=true`** only when you intentionally want the prompt (manual CLI against prod).
-
-### Development
-
 ```bash
 npm run dev
 ```
@@ -209,6 +203,18 @@ npm run i18n:create-page {slug}
 | `npm run seed` | Seed database with initial data |
 | `npm run seed:about-images` | Upload about page images to Cloudinary |
 
+## Caching & Revalidation
+
+Changes made in the admin panel take effect within **5 minutes** on production, thanks to a layered caching strategy:
+
+| Layer | Setting | Purpose |
+|------|---------|---------|
+| ISR revalidation | `revalidate = 300` (5 min) on all pages | Ensures pages are regenerated even without a hook trigger |
+| Payload collection cache | `cacheConfig: { ttl: 60 }` | Keeps collection documents fresh for 60 seconds |
+| Payload global cache | `cacheConfig: { ttl: 60 }` | Keeps global documents fresh for 60 seconds |
+| On-demand revalidation | `revalidateCollection` / `revalidateGlobal` hooks | Immediately revalidates affected pages on content change |
+| Dictionary cache | In-memory, cleared on global change | Keeps static i18n overlays fast |
+
 ## Deployment
 
 This project is deployed on **Vercel**. Environment variables must be configured in the Vercel dashboard:
@@ -220,6 +226,8 @@ This project is deployed on **Vercel**. Environment variables must be configured
 5. Pushes to `main` trigger automatic deployments (when Git integration is enabled)
 
 Ensure `npm install` runs on Vercel (default) so **`patch-package`** applies [`patches/@payloadcms+drizzle+3.84.1.patch`](patches/@payloadcms+drizzle+3.84.1.patch). After upgrading `@payloadcms/drizzle`, regenerate or remove that patch if install fails.
+
+`next build` runs **`prodMigrations`** against `DATABASE_URL`. If `payload-migrations` contains a dev-schema marker (**batch `-1`**), upstream Payload reads stdin for confirmation and **non‑TTY builds hang forever**. This repo patches `@payloadcms/drizzle` so confirmation **defaults to automatic**. Use **`PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM=true`** only when you intentionally want the prompt (manual CLI against prod).
 
 ## License
 

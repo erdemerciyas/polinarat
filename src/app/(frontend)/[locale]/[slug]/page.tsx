@@ -7,7 +7,7 @@ import { RenderBlocks } from '@/components/RenderBlocks'
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
-export const revalidate = 3600
+export const revalidate = 300
 
 export async function generateStaticParams() {
   const params: Array<{ locale: string; slug: string }> = []

@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { revalidateCollection } from '@/hooks/revalidateOnChange'
+
 export const ProductCategories: CollectionConfig = {
   slug: 'product-categories',
   labels: { singular: 'Product', plural: 'Products' },
@@ -10,6 +12,13 @@ export const ProductCategories: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [revalidateCollection],
+  },
+  cacheConfig: {
+    ttl: 60,
+    disableCacheOnUpdate: false,
   },
   fields: [
     {

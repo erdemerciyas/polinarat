@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { revalidateCollection } from '@/hooks/revalidateOnChange'
+
 export const News: CollectionConfig = {
   slug: 'news',
   labels: { singular: 'Article', plural: 'News & Events' },
@@ -13,6 +15,13 @@ export const News: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [revalidateCollection],
+  },
+  cacheConfig: {
+    ttl: 60,
+    disableCacheOnUpdate: false,
   },
   fields: [
     {

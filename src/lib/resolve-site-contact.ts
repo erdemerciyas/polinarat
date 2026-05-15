@@ -49,7 +49,9 @@ export function resolveSiteContact(
     fallback.address
   const mapUrl =
     contact?.googleMapsEmbed?.trim() ||
-    (address ? `https://www.google.com/maps/embed?pb=!4m2!1m0!1m0!2m1!1a${encodeURIComponent(address)}!2m2!1m1!1s0x0%3A0x0!3m1!1m2!4m2!3m1!1m2!2m1!1b1!4m2!3m1!1m2!2m1!1b1` : '') ||
+    (address
+      ? `https://www.google.com/maps/embed?pb=!4m8!1m0!1m0!2m1!1a${encodeURIComponent(address)}!3m2!1m0!2m1!4m2!3m1!1m2!2m1!1b1!4m2!3m1!1m2!2m1!1b1`
+      : '') ||
     fallback.mapUrl
 
   return { phones, fax, email, address, mapUrl }

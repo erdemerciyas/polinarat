@@ -13,7 +13,7 @@ import Image from 'next/image'
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
-export const revalidate = 3600
+export const revalidate = 300
 
 export async function generateStaticParams() {
   const locales = (await import('@/lib/locales.json')).default.locales.map((l: { code: string }) => l.code)

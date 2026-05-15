@@ -15,6 +15,10 @@ export const NewsPageSettings: GlobalConfig = {
   hooks: {
     afterChange: [revalidateGlobal],
   },
+  cacheConfig: {
+    ttl: 60,
+    disableCacheOnUpdate: false,
+  },
   fields: [
     seoFields,
     {

@@ -14,6 +14,10 @@ export const Navigation: GlobalConfig = {
   hooks: {
     afterChange: [revalidateGlobal],
   },
+  cacheConfig: {
+    ttl: 60,
+    disableCacheOnUpdate: false,
+  },
   fields: [
     {
       name: 'mainMenu',

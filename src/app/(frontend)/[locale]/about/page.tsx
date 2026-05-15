@@ -11,7 +11,7 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/Scr
 
 type Props = { params: Promise<{ locale: string }> }
 
-export const revalidate = 3600
+export const revalidate = 300
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params

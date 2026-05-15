@@ -14,6 +14,10 @@ export const UiLabels: GlobalConfig = {
   hooks: {
     afterChange: [revalidateGlobal],
   },
+  cacheConfig: {
+    ttl: 60,
+    disableCacheOnUpdate: false,
+  },
   fields: [
     { name: 'learnMore', type: 'text', localized: true, admin: { description: '"Learn More" / "Detaylar"' } },
     { name: 'readMore', type: 'text', localized: true, admin: { description: '"Read More" / "Devamını Oku"' } },

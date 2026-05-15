@@ -104,7 +104,7 @@ type Props = {
   params: Promise<{ locale: string }>
 }
 
-export const revalidate = 3600
+export const revalidate = 300
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
