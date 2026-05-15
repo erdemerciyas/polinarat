@@ -98,12 +98,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale:
-    | ('false' | 'none' | 'null')
-    | false
-    | null
-    | ('tr' | 'en' | 'de' | 'ar')
-    | ('tr' | 'en' | 'de' | 'ar')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'de') | ('en' | 'de')[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -126,7 +121,7 @@ export interface Config {
     'our-business-page-settings': OurBusinessPageSettingsSelect<false> | OurBusinessPageSettingsSelect<true>;
     'ui-labels': UiLabelsSelect<false> | UiLabelsSelect<true>;
   };
-  locale: 'tr' | 'en' | 'de' | 'ar';
+  locale: 'en' | 'de';
   widgets: {
     collections: CollectionsWidget;
   };

@@ -1,20 +1,12 @@
 {
   "locales": [
     {
-      "label": "Türkçe",
-      "code": "tr"
-    },
-    {
       "label": "English",
       "code": "en"
     },
     {
       "label": "Deutsch",
       "code": "de"
-    },
-    {
-      "label": "Arabic",
-      "code": "ar"
     }
   ],
   "defaultLocale": "en"
