@@ -1,5 +1,5 @@
 // Static fallback values (used by middleware and as defaults)
-export const fallbackLocales = ['en', 'tr', 'de', 'ar', 'ru'] as const
+export const fallbackLocales = ['en', 'de'] as const
 export type Locale = string
 export const defaultLocale = 'en'
 
@@ -7,15 +7,12 @@ export const defaultLocale = 'en'
 export const supportedLocales = fallbackLocales
 export const localeLabels: Record<string, string> = {
   en: 'EN',
-  tr: 'TR',
   de: 'DE',
-  ar: 'AR',
-  ru: 'RU',
 }
 
 export function isValidLocale(locale: string): boolean {
-  // Accept any 2-5 char lowercase alpha string as potentially valid
-  return /^[a-z]{2,5}$/.test(locale)
+  // Accept only supported locales (en, de)
+  return ['en', 'de'].includes(locale)
 }
 
 export function getLocaleFromPathname(pathname: string): string | null {
@@ -55,10 +52,7 @@ export async function getActiveLanguages(): Promise<Language[]> {
       // Return fallback if no languages configured yet
       return [
         { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
-        { id: '2', code: 'tr', label: 'Türkçe', nativeLabel: 'Türkçe', shortLabel: 'TR', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
-        { id: '3', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 2 },
-        { id: '4', code: 'ar', label: 'Arabic', nativeLabel: 'العربية', shortLabel: 'AR', isDefault: false, isActive: true, isRTL: true, sortOrder: 3 },
-        { id: '5', code: 'ru', label: 'Russian', nativeLabel: 'Русский', shortLabel: 'RU', isDefault: false, isActive: true, isRTL: false, sortOrder: 4 },
+        { id: '2', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
       ]
     }
 
@@ -79,10 +73,7 @@ export async function getActiveLanguages(): Promise<Language[]> {
     // Fallback for build time or errors
     return [
       { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
-      { id: '2', code: 'tr', label: 'Türkçe', nativeLabel: 'Türkçe', shortLabel: 'TR', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
-      { id: '3', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 2 },
-      { id: '4', code: 'ar', label: 'Arabic', nativeLabel: 'العربية', shortLabel: 'AR', isDefault: false, isActive: true, isRTL: true, sortOrder: 3 },
-      { id: '5', code: 'ru', label: 'Russian', nativeLabel: 'Русский', shortLabel: 'RU', isDefault: false, isActive: true, isRTL: false, sortOrder: 4 },
+      { id: '2', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
     ]
   }
 }
@@ -97,7 +88,7 @@ export async function getDefaultLanguageCode(): Promise<string> {
 // Server-side: get active locale codes as string array
 export async function getActiveLocaleCodes(): Promise<string[]> {
   const languages = await getActiveLanguages()
-  return languages.map(l => l.code)
+  return languages.filter(l => l.isActive).map(l => l.code)
 }
 
 // Server-side: check if a locale code is active
