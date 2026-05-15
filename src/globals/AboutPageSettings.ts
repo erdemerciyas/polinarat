@@ -15,10 +15,6 @@ export const AboutPageSettings: GlobalConfig = {
   hooks: {
     afterChange: [revalidateGlobal],
   },
-  cacheConfig: {
-    ttl: 60,
-    disableCacheOnUpdate: false,
-  },
   fields: [
     seoFields,
     // 1. Hero Section

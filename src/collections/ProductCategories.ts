@@ -16,10 +16,6 @@ export const ProductCategories: CollectionConfig = {
   hooks: {
     afterChange: [revalidateCollection],
   },
-  cacheConfig: {
-    ttl: 60,
-    disableCacheOnUpdate: false,
-  },
   fields: [
     {
       name: 'name',

@@ -15,10 +15,6 @@ export const OurBusinessPageSettings: GlobalConfig = {
   hooks: {
     afterChange: [revalidateGlobal],
   },
-  cacheConfig: {
-    ttl: 60,
-    disableCacheOnUpdate: false,
-  },
   fields: [
     seoFields,
   ],
