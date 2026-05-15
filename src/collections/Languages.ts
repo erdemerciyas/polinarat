@@ -299,12 +299,27 @@ export const Languages: CollectionConfig = {
           await addLocaleToPostgresEnum(payload, doc.code)
         }
 
+        // Clear dictionary cache so new/removed languages reflect immediately
+        try {
+          const { clearDictionaryCache } = await import('@/lib/getDictionary')
+          clearDictionaryCache()
+        } catch {
+          // getDictionary may not be available in all contexts
+        }
       },
     ],
     afterDelete: [
       async ({ req }) => {
         // Sync locales.json after a language is deleted
         await syncLocalesToFile(req.payload)
+
+        // Clear dictionary cache so removed language disappears immediately
+        try {
+          const { clearDictionaryCache } = await import('@/lib/getDictionary')
+          clearDictionaryCache()
+        } catch {
+          // getDictionary may not be available in all contexts
+        }
       },
     ],
   },
