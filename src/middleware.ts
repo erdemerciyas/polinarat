@@ -27,7 +27,16 @@ export function middleware(request: NextRequest) {
 
   // Check if pathname already has a known locale segment
   const firstSegment = pathname.split('/')[1]
-  if (firstSegment && (knownLocales.has(firstSegment) || looksLikeLocale(firstSegment))) {
+  const hasLocale = firstSegment && knownLocales.has(firstSegment)
+
+  // If it looks like a locale but isn't in our known list, redirect to default locale
+  if (firstSegment && looksLikeLocale(firstSegment) && !knownLocales.has(firstSegment)) {
+    const url = request.nextUrl.clone()
+    url.pathname = `/${defaultLocaleCode}${pathname}`
+    return NextResponse.redirect(url)
+  }
+
+  if (firstSegment && hasLocale) {
     const requestHeaders = new Headers(request.headers)
     requestHeaders.set('x-next-locale', firstSegment)
     const response = NextResponse.next({
