@@ -36,63 +36,24 @@ export type Language = {
 
 // Server-side: fetch active languages directly from Payload
 export async function getActiveLanguages(): Promise<Language[]> {
-  try {
-    const { getPayload } = await import('payload')
-    const config = await import('@/../payload.config')
-    const payload = await getPayload({ config: config.default })
-
-    const result = await payload.find({
-      collection: 'languages',
-      where: { isActive: { equals: true } },
-      sort: 'sortOrder',
-      limit: 50,
-    })
-
-    if (result.docs.length === 0) {
-      // Return fallback if no languages configured yet
-      return [
-        { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
-        { id: '2', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
-      ]
-    }
-
-    return result.docs.map((doc: any) => ({
-      id: String(doc.id),
-      code: doc.code,
-      label: doc.label,
-      nativeLabel: doc.nativeLabel,
-      shortLabel: doc.shortLabel,
-      isDefault: doc.isDefault ?? false,
-      isActive: doc.isActive ?? true,
-      isRTL: doc.isRTL ?? false,
-      flagEmoji: doc.flagEmoji || undefined,
-      sortOrder: doc.sortOrder ?? 0,
-    }))
-  } catch (e) {
-    console.error("GET ACTIVE LANGUAGES ERROR:", e)
-    // Fallback for build time or errors
-    return [
-      { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
-      { id: '2', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
-    ]
-  }
+  // HARD-CODED: Only EN and DE are supported — never return other languages from DB
+  return [
+    { id: '1', code: 'en', label: 'English', nativeLabel: 'English', shortLabel: 'EN', isDefault: true, isActive: true, isRTL: false, sortOrder: 0 },
+    { id: '2', code: 'de', label: 'Deutsch', nativeLabel: 'Deutsch', shortLabel: 'DE', isDefault: false, isActive: true, isRTL: false, sortOrder: 1 },
+  ]
 }
 
 // Server-side: get the default language code
 export async function getDefaultLanguageCode(): Promise<string> {
-  const languages = await getActiveLanguages()
-  const defaultLang = languages.find(l => l.isDefault)
-  return defaultLang?.code || languages[0]?.code || 'en'
+  return 'en'
 }
 
 // Server-side: get active locale codes as string array
 export async function getActiveLocaleCodes(): Promise<string[]> {
-  const languages = await getActiveLanguages()
-  return languages.filter(l => l.isActive).map(l => l.code)
+  return ['en', 'de']
 }
 
 // Server-side: check if a locale code is active
 export async function isActiveLocale(code: string): Promise<boolean> {
-  const codes = await getActiveLocaleCodes()
-  return codes.includes(code)
+  return ['en', 'de'].includes(code)
 }
