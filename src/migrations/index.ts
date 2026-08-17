@@ -4,6 +4,7 @@ import * as migration_20260330_000000_slider_settings_upgrade from './20260330_0
 import * as migration_20260514_120000_page_globals_seo_fields from './20260514_120000_page_globals_seo_fields';
 import * as migration_20260514_130000_site_settings_contact_opening_hours from './20260514_130000_site_settings_contact_opening_hours';
 import * as migration_20260514_131500_homepage_about_preview_labels_image from './20260514_131500_homepage_about_preview_labels_image';
+import * as migration_20260817_100000_normalize_locales_en_de from './20260817_100000_normalize_locales_en_de';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260514_131500_homepage_about_preview_labels_image.up,
     down: migration_20260514_131500_homepage_about_preview_labels_image.down,
     name: '20260514_131500_homepage_about_preview_labels_image'
+  },
+  {
+    up: migration_20260817_100000_normalize_locales_en_de.up,
+    down: migration_20260817_100000_normalize_locales_en_de.down,
+    name: '20260817_100000_normalize_locales_en_de'
   },
 ];

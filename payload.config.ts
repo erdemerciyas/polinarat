@@ -38,7 +38,7 @@ const localesConfig: { locales: { label: string; code: string }[]; defaultLocale
     : {
       locales: [
         { label: 'English', code: 'en' },
-        { label: 'Türkçe', code: 'tr' },
+        { label: 'Deutsch', code: 'de' },
       ],
       defaultLocale: 'en',
     }
@@ -146,16 +146,45 @@ export default buildConfig({
       }
     }
 
+    // Keep Languages collection aligned with locales.json (en + de only)
+    const allowedCodes = new Set(localesConfig.locales.map((l) => l.code))
+    const allLangs = await payload.find({
+      collection: 'languages',
+      sort: 'sortOrder',
+      limit: 100,
+    })
+    for (const doc of allLangs.docs) {
+      const code = (doc as { code?: string }).code
+      if (!code) continue
+      if (!allowedCodes.has(code)) {
+        await payload.delete({ collection: 'languages', id: doc.id })
+        payload.logger.info(`✓ Removed unsupported language "${code}" (locales.json sync)`)
+        continue
+      }
+      const shouldBeActive = allowedCodes.has(code)
+      if ((doc as { isActive?: boolean }).isActive !== shouldBeActive) {
+        await payload.update({
+          collection: 'languages',
+          id: doc.id,
+          data: { isActive: shouldBeActive },
+        })
+        payload.logger.info(
+          `✓ Language "${code}" ${shouldBeActive ? 'activated' : 'deactivated'} (locales.json sync)`,
+        )
+      }
+    }
+
     // Sync locales.json after seeding (skipped silently on read-only filesystems like Vercel)
     if (created) {
-      const allLangs = await payload.find({
+      const allLangsAfterSync = await payload.find({
         collection: 'languages',
+        where: { isActive: { equals: true } },
         sort: 'sortOrder',
         limit: 100,
       })
-      const defaultLang = allLangs.docs.find((d: any) => d.isDefault) || allLangs.docs[0]
+      const defaultLang = allLangsAfterSync.docs.find((d: any) => d.isDefault) || allLangsAfterSync.docs[0]
       const localesData = {
-        locales: allLangs.docs.map((doc: any) => ({ label: doc.label, code: doc.code })),
+        locales: allLangsAfterSync.docs.map((doc: any) => ({ label: doc.label, code: doc.code })),
         defaultLocale: defaultLang?.code || 'en',
       }
       try {

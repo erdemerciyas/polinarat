@@ -21,10 +21,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ourBusinessSettings = dictionary['our-business-page-settings'] || null
   } catch {}
 
+  const labels = getStaticLabels(locale)
   const seo = ourBusinessSettings?.seo || {}
   const defaultDesc = await getSiteDefaultDescription(locale)
   const megaItem = navData?.mainMenu?.find((item: any) => item.type === 'mega')
-  const title = seo.title || megaItem?.label || (locale === 'tr' ? 'Faaliyetlerimiz' : 'Our Business')
+  const title = seo.title || megaItem?.label || labels.breadcrumbs.ourBusiness
 
   return generateSEO({
     title,
@@ -147,14 +148,15 @@ export default async function OurBusinessLandingPage({ params }: Props) {
     uiLabels = dictionary['ui-labels'] || null
   } catch {}
 
-  const labels = dictionary['static-content']?.['static-labels'] || getStaticLabels(locale)
+  const staticLabels = getStaticLabels(locale)
+  const labels = dictionary['static-content']?.['static-labels'] || staticLabels
   const highlights = dictionary['static-content']?.['our-business'] || getOurBusinessHighlights(locale)
 
   const megaMenuItem = navData?.mainMenu?.find((item: any) => item.type === 'mega')
-  const pageTitle = megaMenuItem?.label || (locale === 'tr' ? 'Faaliyetlerimiz' : 'Our Business')
+  const pageTitle = megaMenuItem?.label || staticLabels.breadcrumbs.ourBusiness
   const businessSection = homepageData?.businessSection || {}
   const ctaLabels = navData?.megaMenuCTA || {}
-  const learnMore = uiLabels?.learnMore || (locale === 'tr' ? 'Daha Fazla' : 'Learn More')
+  const learnMore = uiLabels?.learnMore || (locale === 'de' ? 'Mehr erfahren' : 'Learn More')
 
   const businessCards: Array<{
     icon: string
@@ -320,13 +322,13 @@ export default async function OurBusinessLandingPage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/95 to-navy/80"></div>
         <div className="relative z-10 max-w-container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-display font-extrabold text-white text-2xl sm:text-3xl tracking-tight-heading mb-4">
-            {ctaLabels.title || (locale === 'tr' ? 'Bize Ulaşın' : 'Get in Touch')}
+            {ctaLabels.title || (locale === 'de' ? 'Kontaktieren Sie uns' : 'Get in Touch')}
           </h2>
           <p className="text-white/60 font-body text-base max-w-xl mx-auto leading-relaxed mb-8">
             {ctaLabels.description || ''}
           </p>
           <Link href={`/${locale}/contact`} className="btn-primary text-base px-10 py-3">
-            {ctaLabels.button || (locale === 'tr' ? 'İletişime Geçin' : 'Contact Us')}
+            {ctaLabels.button || (locale === 'de' ? 'Kontakt aufnehmen' : 'Contact Us')}
           </Link>
         </div>
       </section>

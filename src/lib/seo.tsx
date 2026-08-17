@@ -27,10 +27,7 @@ export async function getSiteDefaultDescription(locale: string): Promise<string>
 
 const ogLocaleMap: Record<string, string> = {
   en: 'en_US',
-  tr: 'tr_TR',
   de: 'de_DE',
-  ar: 'ar_SA',
-  ru: 'ru_RU',
 }
 
 type SEOArgs = {

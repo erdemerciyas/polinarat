@@ -65,7 +65,7 @@ cp .env.example .env
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret |
 | `PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM` | Optional: set to `true` to restore Payload’s interactive “dev push / data loss” migration prompt (defaults off so `next build` never hangs on Vercel). |
 
-### Payload migrations on Vercel
+### Run locally
 
 ```bash
 npm run dev
@@ -82,6 +82,22 @@ npm run seed
 ```
 
 > **Warning:** The seed script creates a default admin account. Change credentials before deploying to production.
+
+### First-time database setup (polinar.at)
+
+This project uses **only English (`en`) and German (`de`)**. The `polinar.at` Neon database must be **separate** from [polinar.com.tr](https://www.polinar.com.tr) — do not share `DATABASE_URL` between the two Vercel projects.
+
+After pointing `.env` / Vercel at the polinar.at database, run once:
+
+```bash
+# 1. Normalize DB enum + languages to en/de only (safe to re-run)
+npm run i18n:normalize-locales
+
+# 2. Import German CMS content from public/locales/de.json
+npm run seed:de
+```
+
+`npm run build` also applies pending **`prodMigrations`** (including locale normalization) automatically on Vercel.
 
 ### Build & Production
 
@@ -127,13 +143,23 @@ tailwind.config.ts             # Tailwind CSS configuration
 
 ## Internationalization (i18n)
 
-Polinar supports **English (en)**, **Turkish (tr)**, **German (de)**, **Arabic (ar)**, and **Russian (ru)** — configured in `src/lib/locales.json`. Locales are dynamic: editing the `Languages` collection in the admin panel rewrites `locales.json` and Payload's locale config on the next server boot.
+Polinar.at supports **English (`en`)** and **German (`de`)** only — configured in `src/lib/locales.json` and enforced in `payload.config.ts`. The `Languages` collection in the admin panel is restricted to these two codes; legacy locales (`tr`, `ar`, `ru`) are removed on server boot and via `npm run i18n:normalize-locales`.
+
+> **Important:** [polinar.com.tr](https://www.polinar.com.tr) is a separate repo and must use its **own** Neon database. Sharing `DATABASE_URL` between sites will cause CMS content and language settings to overwrite each other.
 
 Content is managed through two systems:
 
 ### CMS Content
 
-Translated fields on Payload collections and globals. Managed via the admin panel at `/admin`.
+Translated fields on Payload collections and globals. Managed via the admin panel at `/admin` (locale switcher: EN / DE).
+
+German CMS strings live in `public/locales/de.json` and can be synced into the database with:
+
+```bash
+npm run i18n:import          # merge only empty fields
+npm run i18n:import -- --force   # overwrite from JSON
+npm run seed:de              # full DE seed (import + globals + news + hero fix)
+```
 
 ### Static Content
 
@@ -143,10 +169,7 @@ Locale-aware data modules under `src/data/{page-slug}/`:
 src/data/{page-slug}/
   types.ts    — TypeScript type definition
   en.ts       — English content (source of truth)
-  tr.ts       — Turkish translation
   de.ts       — German translation
-  ar.ts       — Arabic translation
-  ru.ts       — Russian translation
   index.ts    — Loader with EN fallback
 ```
 
@@ -162,12 +185,15 @@ npm run i18n:create-page {slug}
 
 | Script | Description |
 |--------|-------------|
-| `npm run i18n:import` | Import translations into CMS |
-| `npm run i18n:export` | Export CMS translations |
+| `npm run i18n:import` | Import `public/locales/*.json` into CMS (merge empty fields) |
+| `npm run i18n:import -- --force` | Overwrite CMS fields from JSON |
+| `npm run i18n:export` | Export CMS translations to JSON |
 | `npm run i18n:validate` | Validate translation completeness |
 | `npm run i18n:scaffold` | Scaffold CMS translation keys |
 | `npm run i18n:scaffold-static` | Scaffold static translation files |
 | `npm run i18n:create-page` | Generate a new static page module |
+| `npm run i18n:normalize-locales` | DB cleanup: en/de only, remove legacy locale rows |
+| `npm run seed:de` | Seed all German CMS content (run after normalize on new DB) |
 
 ## Key Features
 
@@ -183,7 +209,6 @@ npm run i18n:create-page {slug}
 - **AI Chatbot** — Google Vertex AI (Gemini)-powered support widget
 - **Cloudinary Media** — all media assets stored and served via Cloudinary CDN
 - **SEO** — per-page meta, Open Graph, JSON-LD structured data, auto-generated sitemap & robots.txt
-- **RTL Support** — automatic `dir="rtl"` for Arabic locale
 - **Mega Menu** — CMS-driven navigation with category-themed cards, responsive robot CTA panel, and mobile menu
 - **Scroll Animations** — Framer Motion powered reveal effects with staggered entry, blur-to-sharp transitions
 - **Core Values Section** — clean card grid with auto-rotating subtitle carousel that cycles through business areas (moulds, machinery, testing) using existing localized CMS data, animated nested octagon SVG background, and hover-triggered icon/title transitions
@@ -202,6 +227,8 @@ npm run i18n:create-page {slug}
 | `npm run generate:types` | Generate Payload TypeScript types |
 | `npm run seed` | Seed database with initial data |
 | `npm run seed:about-images` | Upload about page images to Cloudinary |
+| `npm run i18n:normalize-locales` | Normalize DB to en/de locales only |
+| `npm run seed:de` | Import and seed all German CMS content |
 
 ## Caching & Revalidation
 
@@ -222,12 +249,15 @@ This project is deployed on **Vercel**. Environment variables must be configured
 1. Import or connect this repo: [erdemerciyas/polinarat](https://github.com/erdemerciyas/polinarat)
 2. Go to your Vercel project settings → Environment Variables
 3. Add all variables from `.env.example`
-4. Set `NEXT_PUBLIC_SITE_URL` to your production domain
-5. Pushes to `main` trigger automatic deployments (when Git integration is enabled)
+4. Set `NEXT_PUBLIC_SITE_URL` to `https://www.polinar.at`
+5. Set `DATABASE_URL` to the **polinar.at-only** Neon database (not shared with polinar.com.tr)
+6. Pushes to `main` trigger automatic deployments (when Git integration is enabled)
+
+**New or migrated database:** run `npm run i18n:normalize-locales` and `npm run seed:de` locally against that `DATABASE_URL` before or right after the first deploy, so admin locale switching (`?locale=de`) and DE content work immediately.
 
 Ensure `npm install` runs on Vercel (default) so **`patch-package`** applies [`patches/@payloadcms+drizzle+3.84.1.patch`](patches/@payloadcms+drizzle+3.84.1.patch). After upgrading `@payloadcms/drizzle`, regenerate or remove that patch if install fails.
 
-`next build` runs **`prodMigrations`** against `DATABASE_URL`. If `payload-migrations` contains a dev-schema marker (**batch `-1`**), upstream Payload reads stdin for confirmation and **non‑TTY builds hang forever**. This repo patches `@payloadcms/drizzle` so confirmation **defaults to automatic**. Use **`PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM=true`** only when you intentionally want the prompt (manual CLI against prod).
+`next build` runs **`prodMigrations`** against `DATABASE_URL` (including `20260817_100000_normalize_locales_en_de`). If `payload-migrations` contains a dev-schema marker (**batch `-1`**), upstream Payload reads stdin for confirmation and **non‑TTY builds hang forever**. This repo patches `@payloadcms/drizzle` so confirmation **defaults to automatic**. Use **`PAYLOAD_REQUIRE_DEV_PUSH_MIGRATION_CONFIRM=true`** only when you intentionally want the prompt (manual CLI against prod).
 
 ## License
 

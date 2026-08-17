@@ -21,6 +21,8 @@
     "i18n:scaffold": "tsx scripts/scaffold-i18n.ts",
     "i18n:scaffold-static": "tsx scripts/scaffold-static-i18n.ts",
     "i18n:create-page": "tsx scripts/create-static-page.ts",
+    "i18n:normalize-locales": "tsx scripts/run-locale-migration.ts",
+    "seed:de": "tsx scripts/import-i18n.ts --force && tsx scripts/seed-de-complete.ts && tsx scripts/seed-de-news.ts && tsx scripts/fix-homepage-hero.ts",
     "seed:about-images": "tsx scripts/seed-about-images.ts"
   },
   "dependencies": {

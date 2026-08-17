@@ -575,7 +575,7 @@ export interface NewsletterSubscriber {
   createdAt: string;
 }
 /**
- * Manage the languages available on the website. After adding or removing a language, restart the server to apply changes to the content editor.
+ * Only English (en) and German (de) are supported. Changes require a server restart.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "languages".
@@ -583,16 +583,16 @@ export interface NewsletterSubscriber {
 export interface Language {
   id: number;
   /**
-   * ISO 639-1 language code (e.g. en, tr, de, fr, ar)
+   * ISO 639-1 language code (e.g. en, de). Only EN and DE are supported.
    */
   code: string;
   label: string;
   /**
-   * Language name in its own language (e.g. Türkçe, Deutsch)
+   * Language name in its own language (e.g. Deutsch)
    */
   nativeLabel: string;
   /**
-   * Short label for language selector (e.g. EN, TR)
+   * Short label for language selector (e.g. EN, DE)
    */
   shortLabel: string;
   /**
@@ -608,7 +608,7 @@ export interface Language {
    */
   isRTL?: boolean | null;
   /**
-   * Flag emoji for the language (e.g. 🇬🇧, 🇹🇷, 🇩🇪). Optional.
+   * Flag emoji for the language (e.g. 🇬🇧, 🇩🇪). Optional.
    */
   flagEmoji?: string | null;
   /**

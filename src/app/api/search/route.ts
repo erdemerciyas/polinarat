@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayloadClient } from '@/lib/payload'
 import { getDictionary } from '@/lib/getDictionary'
+import { getStaticLabels } from '@/data/static-labels'
 import { getInjectionMouldsData } from '@/data/injection-moulds'
 import { getMachineryData } from '@/data/machinery'
 import { getPlasticTestEquipmentData } from '@/data/plastic-test-equipment'
@@ -121,6 +122,14 @@ export async function GET(req: NextRequest) {
     })
   }
 
+  const labels = getStaticLabels(locale)
+  const pageTitles = {
+    home: labels.breadcrumbs.home,
+    about: locale === 'de' ? 'Über uns' : 'About Us',
+    contact: locale === 'de' ? 'Kontakt' : 'Contact',
+    news: locale === 'de' ? 'Nachrichten' : 'News',
+  }
+
   // --- 2. CMS Globals (page-level content) ---
   const globalsToSearch: {
     slug: string
@@ -138,7 +147,7 @@ export async function GET(req: NextRequest) {
         { group: 'businessSection', fields: ['sectionTitle'] },
         { group: 'newsSection', fields: ['title'] },
       ],
-      title: locale === 'tr' ? 'Ana Sayfa' : 'Home',
+      title: pageTitles.home,
       href: `/${locale}`,
       type: 'page',
     },
@@ -152,7 +161,7 @@ export async function GET(req: NextRequest) {
         { group: 'certificates', fields: ['title', 'description'] },
         { group: 'cta', fields: ['title', 'description'] },
       ],
-      title: locale === 'tr' ? 'Hakkımızda' : 'About Us',
+      title: pageTitles.about,
       href: `/${locale}/about`,
       type: 'page',
     },
@@ -162,7 +171,7 @@ export async function GET(req: NextRequest) {
       nested: [
         { group: 'hero', fields: ['title', 'subtitle'] },
       ],
-      title: locale === 'tr' ? 'İletişim' : 'Contact',
+      title: pageTitles.contact,
       href: `/${locale}/contact`,
       type: 'page',
     },
@@ -172,7 +181,7 @@ export async function GET(req: NextRequest) {
       nested: [
         { group: 'hero', fields: ['title'] },
       ],
-      title: locale === 'tr' ? 'Haberler' : 'News',
+      title: pageTitles.news,
       href: `/${locale}/news`,
       type: 'page',
     },

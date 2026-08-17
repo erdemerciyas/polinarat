@@ -73,8 +73,8 @@ export async function getChatbotContext(locale: string) {
 }
 
 export function buildSystemPrompt(context: { productList: string; serviceList: string; contactInfo: string }, locale: string) {
-  const langInstruction = locale === 'tr'
-    ? 'Kullanıcıyla Türkçe konuş.'
+  const langInstruction = locale === 'de'
+    ? 'Antworte auf Deutsch.'
     : 'Respond in English.'
 
   return `You are Polinar's customer support assistant. Polinar is a leading Turkish manufacturer of plastic injection moulds for pipe and fittings, established in 2000 and based in İstanbul.

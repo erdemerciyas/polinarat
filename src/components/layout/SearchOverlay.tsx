@@ -11,12 +11,12 @@ type SearchResult = {
 }
 
 const TYPE_LABELS: Record<string, Record<string, string>> = {
-  page: { en: 'Page', tr: 'Sayfa' },
-  news: { en: 'News', tr: 'Haber' },
-  product: { en: 'Product', tr: 'Ürün' },
-  mould: { en: 'Mould', tr: 'Kalıp' },
-  machine: { en: 'Machine', tr: 'Makine' },
-  equipment: { en: 'Equipment', tr: 'Ekipman' },
+  page: { en: 'Page', de: 'Seite' },
+  news: { en: 'News', de: 'Nachrichten' },
+  product: { en: 'Product', de: 'Produkt' },
+  mould: { en: 'Mould', de: 'Form' },
+  machine: { en: 'Machine', de: 'Maschine' },
+  equipment: { en: 'Equipment', de: 'Ausrüstung' },
 }
 
 const pageIcon = (
@@ -51,17 +51,17 @@ const TYPE_ICONS: Record<string, ReactNode> = {
 
 const PLACEHOLDERS: Record<string, string> = {
   en: 'Search pages, news, products…',
-  tr: 'Sayfa, haber, ürün ara…',
+  de: 'Seiten, Nachrichten, Produkte suchen…',
 }
 
 const EMPTY: Record<string, string> = {
   en: 'No results found',
-  tr: 'Sonuç bulunamadı',
+  de: 'Keine Ergebnisse gefunden',
 }
 
 const HINT: Record<string, string> = {
   en: 'Type at least 2 characters',
-  tr: 'En az 2 karakter yazın',
+  de: 'Mindestens 2 Zeichen eingeben',
 }
 
 export function SearchOverlay({ open, onClose, locale }: { open: boolean; onClose: () => void; locale: string }) {
@@ -133,7 +133,7 @@ export function SearchOverlay({ open, onClose, locale }: { open: boolean; onClos
 
   if (!open) return null
 
-  const lang = locale === 'tr' ? 'tr' : 'en'
+  const lang = locale === 'de' ? 'de' : 'en'
 
   return (
     <div className="search-overlay-backdrop" onClick={onClose}>

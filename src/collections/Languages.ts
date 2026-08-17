@@ -1,4 +1,7 @@
 import type { CollectionConfig } from 'payload'
+import { APIError } from 'payload'
+
+const ALLOWED_LANGUAGE_CODES = ['en', 'de'] as const
 
 export const Languages: CollectionConfig = {
   slug: 'languages',
@@ -11,7 +14,7 @@ export const Languages: CollectionConfig = {
     useAsTitle: 'label',
     defaultColumns: ['label', 'code', 'nativeLabel', 'isActive', 'isDefault', 'sortOrder'],
     description:
-      'Manage the languages available on the website. After adding or removing a language, restart the server to apply changes to the content editor.',
+      'Only English (en) and German (de) are supported. Changes require a server restart.',
   },
   access: {
     read: () => true,
@@ -146,6 +149,12 @@ export const Languages: CollectionConfig = {
 
         if (data?.code) {
           data.code = data.code.toLowerCase().trim()
+          if (!ALLOWED_LANGUAGE_CODES.includes(data.code as (typeof ALLOWED_LANGUAGE_CODES)[number])) {
+            throw new APIError(
+              `Only ${ALLOWED_LANGUAGE_CODES.join(' and ')} are supported.`,
+              400,
+            )
+          }
         }
 
         return data
